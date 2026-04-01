@@ -1,13 +1,15 @@
 import { NextResponse } from "next/server";
-import { getDb } from "@/db";
-import { subscribers } from "@/db/schema";
 import { subscribeSchema } from "@/modules/newsletter/schemas/subscribe";
+import { getSupabaseServiceRoleClient } from "@/lib/supabase/admin";
 
 export async function POST(request: Request) {
-  const db = getDb();
-  if (!db) {
+  const supabase = getSupabaseServiceRoleClient();
+  if (!supabase) {
     return NextResponse.json(
-      { error: "Database is not configured. Set DATABASE_URL." },
+      {
+        error:
+          "Server database client is not configured. Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.",
+      },
       { status: 503 },
     );
   }
@@ -27,10 +29,36 @@ export async function POST(request: Request) {
     );
   }
 
-  await db
-    .insert(subscribers)
-    .values({ email: parsed.data.email })
-    .onConflictDoNothing({ target: subscribers.email });
+  try {
+    // #region agent log
+    console.error("[api/subscribe] inserting subscriber via supabase");
+    // #endregion agent log
+
+    const { error } = await supabase
+      .from("subscribers")
+      .upsert({ email: parsed.data.email }, { onConflict: "email", ignoreDuplicates: true });
+
+    if (error) {
+      // #region agent log
+      console.error("[api/subscribe] supabase insert error", {
+        code: error.code,
+        message: error.message,
+      });
+      // #endregion agent log
+      return NextResponse.json({ error: "Database insert failed" }, { status: 500 });
+    }
+  } catch (err) {
+    // #region agent log
+    console.error("[api/subscribe] insert failed", {
+      name: err instanceof Error ? err.name : typeof err,
+      message: err instanceof Error ? err.message : String(err),
+    });
+    // #endregion agent log
+    return NextResponse.json(
+      { error: "Database insert failed" },
+      { status: 500 },
+    );
+  }
 
   return NextResponse.json({ ok: true });
 }

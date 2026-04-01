@@ -1,13 +1,15 @@
 import { NextResponse } from "next/server";
-import { getDb } from "@/db";
-import { contactMessages } from "@/db/schema";
 import { contactFormSchema } from "@/modules/contact/schemas/contact";
+import { getSupabaseServiceRoleClient } from "@/lib/supabase/admin";
 
 export async function POST(request: Request) {
-  const db = getDb();
-  if (!db) {
+  const supabase = getSupabaseServiceRoleClient();
+  if (!supabase) {
     return NextResponse.json(
-      { error: "Database is not configured. Set DATABASE_URL." },
+      {
+        error:
+          "Server database client is not configured. Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.",
+      },
       { status: 503 },
     );
   }
@@ -27,7 +29,20 @@ export async function POST(request: Request) {
     );
   }
 
-  await db.insert(contactMessages).values(parsed.data);
+  // #region agent log
+  console.error("[api/contact] inserting message via supabase");
+  // #endregion agent log
+
+  const { error } = await supabase.from("contact_messages").insert(parsed.data);
+  if (error) {
+    // #region agent log
+    console.error("[api/contact] supabase insert error", {
+      code: error.code,
+      message: error.message,
+    });
+    // #endregion agent log
+    return NextResponse.json({ error: "Database insert failed" }, { status: 500 });
+  }
 
   return NextResponse.json({ ok: true });
 }
