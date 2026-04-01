@@ -1,0 +1,34 @@
+---
+title: "Building a modular personal site with MDX"
+description: "Why MDX fits a brand site that will grow into a platform, and how static generation keeps things fast."
+date: "2026-03-15"
+category: "engineering"
+tags:
+  - nextjs
+  - mdx
+  - architecture
+---
+
+This post demonstrates **MDX**, fenced code with syntax highlighting, and structure you can extend later with a CMS or database.
+
+## Why MDX first
+
+Git-backed content keeps drafts in branches, diffs readable, and deployment predictable. When you need scheduling or non-technical editors, you can migrate the same slugs into Postgres or Payload without changing routes.
+
+## Code sample
+
+```ts
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  return getAllSlugs().map((slug) => ({ slug }));
+}
+```
+
+## What comes next
+
+Tags, categories, and RSS help readers discover posts. Contact and newsletter endpoints turn traffic into relationships — without bolting on a heavy CMS on day one.
+
+### Small heading for TOC
+
+You should see this in the table of contents beside the article on large screens.

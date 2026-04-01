@@ -1,0 +1,20 @@
+---
+title: "Static-first pages, dynamic only where it matters"
+description: "A simple rule for personal sites: make marketing and content static; keep mutations behind small API routes."
+date: "2026-03-01"
+category: "performance"
+tags:
+  - nextjs
+  - performance
+  - seo
+---
+
+Marketing pages, articles, and project write-ups rarely need per-request personalization. Generate them statically or revalidate on a cadence so edge caches stay hot.
+
+## When to use dynamic rendering
+
+Use server dynamics for authenticated dashboards, form submissions, and anything that must reflect private state. Keep those routes small and well isolated.
+
+## Related ideas
+
+Pair static content with **incremental static regeneration** when you want fresh data without sacrificing the default fast path for anonymous visitors.
