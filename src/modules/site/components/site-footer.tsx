@@ -13,8 +13,7 @@ export function SiteFooter() {
             <div>
               <p className="eyebrow">Newsletter</p>
               <p className="mt-4 max-w-lg text-sm text-muted-foreground">
-                Occasional updates on posts and projects. No spam - unsubscribe anytime once
-                email is wired.
+                Occasional updates on posts and projects. No spam - unsubscribe anytime.
               </p>
             </div>
             <div className="relative">

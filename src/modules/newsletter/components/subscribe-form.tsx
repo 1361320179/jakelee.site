@@ -51,7 +51,7 @@ export function SubscribeForm() {
           className="flex-1"
         />
         <Button type="submit" disabled={pending} className="shrink-0 sm:px-5">
-          {pending ? "…" : "Subscribe"}
+          {pending ? "..." : "Subscribe"}
         </Button>
       </form>
       {status === "ok" ? (
@@ -59,7 +59,7 @@ export function SubscribeForm() {
       ) : null}
       {status === "err" ? (
         <span className="text-xs text-destructive">
-          Could not subscribe. Check DATABASE_URL or try later.
+          Could not subscribe right now. Try again in a moment.
         </span>
       ) : null}
     </div>

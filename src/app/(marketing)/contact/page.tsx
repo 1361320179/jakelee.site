@@ -4,7 +4,7 @@ import { ContactForm } from "@/modules/contact/components/contact-form";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: `Contact ${siteConfig.name} - send a message; stored via Drizzle when DATABASE_URL is set.`,
+  description: `Contact ${siteConfig.name} - send a message, store it in Supabase, and notify by email.`,
 };
 
 export default function ContactPage() {
@@ -16,8 +16,8 @@ export default function ContactPage() {
           Contact
         </h1>
         <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-          Share a short brief and the best email to reach you. Messages are written to your
-          Postgres database through the contact API route.
+          Share a short brief and the best email to reach you. Messages are stored through the
+          contact API route and forwarded to my inbox.
         </p>
       </div>
 
