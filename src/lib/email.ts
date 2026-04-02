@@ -18,7 +18,13 @@ type ResendSendPayload = {
   reply_to?: string;
 };
 
-function getNotificationConfig() {
+type NotificationConfig = {
+  apiKey: string;
+  from: string;
+  to: string;
+};
+
+function getNotificationConfig(): NotificationConfig | null {
   const apiKey = env.RESEND_API_KEY;
   const to = env.EMAIL_TO;
   const from = env.EMAIL_FROM;
@@ -26,6 +32,14 @@ function getNotificationConfig() {
   if (!apiKey || !to || !from) return null;
 
   return { apiKey, from, to };
+}
+
+function getMissingNotificationConfigFields() {
+  return [
+    !env.RESEND_API_KEY ? "RESEND_API_KEY" : null,
+    !env.EMAIL_TO ? "EMAIL_TO" : null,
+    !env.EMAIL_FROM ? "EMAIL_FROM" : null,
+  ].filter((value): value is string => Boolean(value));
 }
 
 async function sendEmail(payload: ResendSendPayload) {
@@ -49,6 +63,9 @@ async function sendEmail(payload: ResendSendPayload) {
     const errorText = await res.text().catch(() => "");
     throw new Error(`Resend send failed (${res.status}): ${errorText || "unknown error"}`);
   }
+
+  const json = (await res.json().catch(() => null)) as { id?: string } | null;
+  return { id: json?.id ?? null };
 }
 
 function escapeHtml(value: string) {
@@ -77,9 +94,14 @@ export function isEmailNotificationConfigured() {
 
 export async function sendSubscribeNotification({ email }: SubscribeNotificationInput) {
   const config = getNotificationConfig();
-  if (!config) return;
+  if (!config) {
+    console.error("[email] notification skipped: missing config", {
+      missing: getMissingNotificationConfigFields(),
+    });
+    return;
+  }
 
-  await sendEmail({
+  const result = await sendEmail({
     from: config.from,
     to: [config.to],
     subject: `New newsletter subscriber: ${email}`,
@@ -90,6 +112,12 @@ export async function sendSubscribeNotification({ email }: SubscribeNotification
       ["Source", "Website newsletter form"],
     ]),
   });
+
+  console.error("[email] newsletter notification sent", {
+    email,
+    id: result.id,
+    to: config.to,
+  });
 }
 
 export async function sendContactNotification({
@@ -98,9 +126,14 @@ export async function sendContactNotification({
   name,
 }: ContactNotificationInput) {
   const config = getNotificationConfig();
-  if (!config) return;
+  if (!config) {
+    console.error("[email] notification skipped: missing config", {
+      missing: getMissingNotificationConfigFields(),
+    });
+    return;
+  }
 
-  await sendEmail({
+  const result = await sendEmail({
     from: config.from,
     to: [config.to],
     subject: `New contact message from ${name}`,
@@ -111,5 +144,12 @@ export async function sendContactNotification({
       ["Submitted at", new Date().toISOString()],
       ["Message", message],
     ]),
+  });
+
+  console.error("[email] contact notification sent", {
+    email,
+    id: result.id,
+    name,
+    to: config.to,
   });
 }
