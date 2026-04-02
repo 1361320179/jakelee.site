@@ -18,7 +18,7 @@ type ProjectCardProps = {
 
 export function ProjectCard({ project }: ProjectCardProps) {
   return (
-    <Card className="flex h-full flex-col border-border/80 transition-shadow hover:shadow-md">
+    <Card className="flex h-full flex-col">
       <CardHeader>
         <div className="flex flex-wrap items-center gap-2">
           {project.featured ? (
@@ -32,7 +32,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
             </Badge>
           ) : null}
         </div>
-        <CardTitle className="font-heading text-xl leading-snug">
+        <CardTitle className="font-heading text-xl leading-snug sm:text-2xl">
           <Link href={`/projects/${project.slug}`} className="hover:underline">
             {project.title}
           </Link>
@@ -41,7 +41,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           {project.summary}
         </CardDescription>
       </CardHeader>
-      <CardContent className="mt-auto flex flex-1 flex-col gap-4">
+      <CardContent className="mt-auto flex flex-1 flex-col gap-5">
         {project.techStack.length > 0 ? (
           <div className="flex flex-wrap gap-1.5">
             {project.techStack.map((tech) => (

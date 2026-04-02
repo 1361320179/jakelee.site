@@ -39,7 +39,7 @@ export function SubscribeForm() {
   }
 
   return (
-    <div className="flex w-full max-w-md flex-col gap-2">
+    <div className="flex w-full max-w-md flex-col gap-3">
       <form onSubmit={onSubmit} className="flex flex-col gap-2 sm:flex-row">
         <Input
           type="email"
@@ -50,7 +50,7 @@ export function SubscribeForm() {
           aria-label="Email for newsletter"
           className="flex-1"
         />
-        <Button type="submit" disabled={pending} className="shrink-0">
+        <Button type="submit" disabled={pending} className="shrink-0 sm:px-5">
           {pending ? "…" : "Subscribe"}
         </Button>
       </form>

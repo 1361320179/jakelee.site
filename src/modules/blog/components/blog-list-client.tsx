@@ -40,7 +40,7 @@ export function BlogListClient({ posts, allTags }: BlogListClientProps) {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="surface-panel flex flex-col gap-4 rounded-[1.75rem] p-4 sm:flex-row sm:items-end sm:justify-between sm:p-5">
         <div className="max-w-md flex-1">
           <label htmlFor="blog-search" className="sr-only">
             Search posts
@@ -48,7 +48,7 @@ export function BlogListClient({ posts, allTags }: BlogListClientProps) {
           <Input
             id="blog-search"
             type="search"
-            placeholder="Search title, tags, description…"
+            placeholder="Search title, tags, description..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -62,7 +62,7 @@ export function BlogListClient({ posts, allTags }: BlogListClientProps) {
             type="button"
             onClick={() => setTag(null)}
             className={cn(
-              "rounded-full border px-2.5 py-0.5 text-xs transition-colors",
+              "rounded-full border px-3 py-1 text-xs font-semibold transition-colors",
               !tagFromUrl
                 ? "border-primary bg-primary/10 text-foreground"
                 : "border-border hover:bg-accent",
@@ -76,7 +76,7 @@ export function BlogListClient({ posts, allTags }: BlogListClientProps) {
               type="button"
               onClick={() => setTag(tag === tagFromUrl ? null : tag)}
               className={cn(
-                "rounded-full border px-2.5 py-0.5 text-xs transition-colors",
+                "rounded-full border px-3 py-1 text-xs font-semibold transition-colors",
                 tagFromUrl === tag
                   ? "border-primary bg-primary/10 text-foreground"
                   : "border-border hover:bg-accent",
@@ -98,7 +98,7 @@ export function BlogListClient({ posts, allTags }: BlogListClientProps) {
       ) : null}
 
       {filtered.length === 0 ? (
-        <p className="rounded-lg border border-dashed border-border px-4 py-12 text-center text-muted-foreground">
+        <p className="surface-panel rounded-[1.75rem] border-dashed px-4 py-12 text-center text-muted-foreground">
           No posts match your filters.
         </p>
       ) : (

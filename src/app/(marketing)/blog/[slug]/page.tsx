@@ -68,7 +68,7 @@ export default async function BlogPostPage({ params }: Props) {
   const { prev, next } = getAdjacentPosts(slug);
 
   return (
-    <article className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
+    <article className="page-shell">
       <JsonLd
         data={getBlogPostingJsonLd({
           title: meta.title,
@@ -78,9 +78,9 @@ export default async function BlogPostPage({ params }: Props) {
           url: `${siteConfig.url.replace(/\/$/, "")}/blog/${meta.slug}`,
         })}
       />
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_220px]">
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_240px]">
         <div className="min-w-0">
-          <header className="mb-10">
+          <header className="page-hero mb-10 px-6 py-8 sm:px-8 sm:py-10">
             <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
               <span className="inline-flex items-center gap-1">
                 <CalendarDays className="size-4" aria-hidden />
@@ -133,7 +133,7 @@ export default async function BlogPostPage({ params }: Props) {
 
           <div
             className={[
-              "prose prose-neutral max-w-none dark:prose-invert",
+              "surface-panel prose prose-neutral max-w-none rounded-[2rem] px-6 py-8 dark:prose-invert sm:px-8",
               "prose-headings:font-heading prose-headings:scroll-mt-24",
               "prose-a:text-primary prose-a:no-underline hover:prose-a:underline",
               "prose-pre:bg-transparent prose-pre:p-0",
@@ -152,7 +152,7 @@ export default async function BlogPostPage({ params }: Props) {
             {prev ? (
               <Link
                 href={`/blog/${prev.slug}`}
-                className="group max-w-[min(100%,20rem)] rounded-lg border border-border p-4 transition-colors hover:bg-muted/50"
+                className="group max-w-[min(100%,20rem)] rounded-[1.5rem] border border-border/70 bg-card/70 p-4 transition-colors hover:bg-muted/50"
               >
                 <span className="text-xs text-muted-foreground">Older</span>
                 <p className="mt-1 font-medium group-hover:underline">{prev.title}</p>
@@ -163,7 +163,7 @@ export default async function BlogPostPage({ params }: Props) {
             {next ? (
               <Link
                 href={`/blog/${next.slug}`}
-                className="group max-w-[min(100%,20rem)] rounded-lg border border-border p-4 text-right transition-colors hover:bg-muted/50 sm:ml-auto"
+                className="group max-w-[min(100%,20rem)] rounded-[1.5rem] border border-border/70 bg-card/70 p-4 text-right transition-colors hover:bg-muted/50 sm:ml-auto"
               >
                 <span className="text-xs text-muted-foreground">Newer</span>
                 <p className="mt-1 font-medium group-hover:underline">{next.title}</p>

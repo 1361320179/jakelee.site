@@ -46,13 +46,12 @@ export function TableOfContents({ items, className }: TableOfContentsProps) {
     <nav
       aria-label="Table of contents"
       className={cn(
-        "text-sm",
-        "sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto py-1",
+        "surface-panel sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-[1.5rem] p-5 text-sm",
         className,
       )}
     >
       <p className="mb-3 font-heading font-semibold text-foreground">On this page</p>
-      <ul className="space-y-1 border-l border-border">
+      <ul className="space-y-1 border-l border-border/70">
         {items.map((item) => (
           <li
             key={item.id}

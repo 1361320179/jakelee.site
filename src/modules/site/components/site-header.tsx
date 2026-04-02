@@ -20,8 +20,9 @@ export function SiteHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4 sm:px-6">
+    <header className="sticky top-0 z-50 w-full px-3 pt-3 sm:px-5">
+      <div className="page-shell">
+        <div className="surface-panel flex h-16 items-center justify-between gap-4 rounded-full px-4 sm:px-5">
         <Link
           href="/"
           className="font-heading text-lg font-semibold tracking-tight text-foreground"
@@ -29,7 +30,10 @@ export function SiteHeader() {
           {siteConfig.name}
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
+        <nav
+          className="hidden items-center gap-1 rounded-full border border-border/70 bg-background/60 p-1 md:flex"
+          aria-label="Main"
+        >
           {mainNav.map((item) => {
             const active =
               item.href === "/"
@@ -40,10 +44,10 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  "rounded-full px-4 py-2 text-sm font-medium transition-all",
                   active
-                    ? "bg-accent text-accent-foreground"
-                    : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
+                    ? "bg-foreground text-background shadow-sm"
+                    : "text-muted-foreground hover:bg-accent/70 hover:text-foreground",
                 )}
               >
                 {item.label}
@@ -52,7 +56,7 @@ export function SiteHeader() {
           })}
         </nav>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           <ThemeToggle />
           <Sheet>
             <SheetTrigger
@@ -64,16 +68,19 @@ export function SiteHeader() {
             >
               <Menu className="size-5" />
             </SheetTrigger>
-            <SheetContent side="right" className="w-[min(100%,20rem)]">
+            <SheetContent
+              side="right"
+              className="w-[min(100%,20rem)] border-border/70 bg-popover/96 backdrop-blur-xl"
+            >
               <SheetHeader>
                 <SheetTitle className="text-left">Menu</SheetTitle>
               </SheetHeader>
-              <nav className="mt-6 flex flex-col gap-1" aria-label="Mobile">
+              <nav className="mt-6 flex flex-col gap-2" aria-label="Mobile">
                 {mainNav.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="rounded-md px-3 py-2.5 text-sm font-medium text-foreground hover:bg-accent"
+                    className="rounded-2xl border border-transparent px-4 py-3 text-sm font-medium text-foreground hover:border-border/70 hover:bg-accent/70"
                   >
                     {item.label}
                   </Link>
@@ -82,6 +89,7 @@ export function SiteHeader() {
             </SheetContent>
           </Sheet>
         </div>
+      </div>
       </div>
     </header>
   );

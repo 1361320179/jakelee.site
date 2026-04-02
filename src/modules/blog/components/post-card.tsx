@@ -16,7 +16,7 @@ type PostCardProps = {
 
 export function PostCard({ post }: PostCardProps) {
   return (
-    <Card className="border-border/80 transition-shadow hover:shadow-md">
+    <Card>
       <CardHeader>
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1">
@@ -39,7 +39,7 @@ export function PostCard({ post }: PostCardProps) {
             </Badge>
           ) : null}
         </div>
-        <CardTitle className="font-heading text-xl leading-snug">
+        <CardTitle className="font-heading text-xl leading-snug sm:text-2xl">
           <Link href={`/blog/${post.slug}`} className="hover:underline">
             {post.title}
           </Link>

@@ -5,7 +5,7 @@ import { ProjectCard } from "@/modules/project/components/project-card";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: `Selected work and experiments from ${siteConfig.name} — stack, tradeoffs, and links.`,
+  description: `Selected work and experiments from ${siteConfig.name} - stack, tradeoffs, and links.`,
 };
 
 export const revalidate = 3600;
@@ -14,17 +14,20 @@ export default function ProjectsPage() {
   const projects = getAllProjectsMeta();
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
-      <header className="mb-10 max-w-2xl">
-        <h1 className="font-heading text-4xl font-bold tracking-tight">Projects</h1>
-        <p className="mt-3 text-lg text-muted-foreground">
+    <div className="page-shell">
+      <header className="page-hero mb-8 max-w-4xl px-6 py-8 sm:px-8 sm:py-10">
+        <p className="eyebrow">Projects</p>
+        <h1 className="font-heading mt-5 text-4xl font-bold tracking-tight sm:text-5xl">
+          Projects
+        </h1>
+        <p className="mt-3 max-w-2xl text-lg leading-relaxed text-muted-foreground">
           Case-style write-ups with tech stack, constraints, and links. Swap summaries and MDX
           bodies as your portfolio grows.
         </p>
       </header>
 
       {projects.length === 0 ? (
-        <p className="rounded-lg border border-dashed border-border px-4 py-12 text-center text-muted-foreground">
+        <p className="surface-panel rounded-[1.75rem] border-dashed px-4 py-12 text-center text-muted-foreground">
           No projects published yet.
         </p>
       ) : (

@@ -50,8 +50,8 @@ export default async function ProjectDetailPage({ params }: Props) {
   const { meta, content } = project;
 
   return (
-    <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
-      <header className="mb-10">
+    <article className="page-shell max-w-4xl">
+      <header className="page-hero mb-10 px-6 py-8 sm:px-8 sm:py-10">
         <div className="flex flex-wrap gap-2">
           {meta.featured ? <Badge>Featured</Badge> : null}
           {meta.status ? (
@@ -112,7 +112,7 @@ export default async function ProjectDetailPage({ params }: Props) {
 
       <div
         className={[
-          "prose prose-neutral max-w-none dark:prose-invert",
+          "surface-panel prose prose-neutral max-w-none rounded-[2rem] px-6 py-8 dark:prose-invert sm:px-8",
           "prose-headings:font-heading prose-headings:scroll-mt-24",
           "prose-a:text-primary prose-a:no-underline hover:prose-a:underline",
           "prose-pre:bg-transparent prose-pre:p-0",
