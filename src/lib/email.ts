@@ -120,6 +120,34 @@ export async function sendSubscribeNotification({ email }: SubscribeNotification
   });
 }
 
+export async function sendSubscribeConfirmation({ email }: SubscribeNotificationInput) {
+  const config = getNotificationConfig();
+  if (!config) {
+    console.error("[email] notification skipped: missing config", {
+      missing: getMissingNotificationConfigFields(),
+    });
+    return;
+  }
+
+  const result = await sendEmail({
+    from: config.from,
+    to: [email],
+    subject: "Subscription confirmed",
+    html: wrapEmailHtml("You're subscribed", [
+      [
+        "Message",
+        "Thanks for subscribing. You'll receive occasional updates about new posts, projects, and product work.",
+      ],
+      ["Email", email],
+    ]),
+  });
+
+  console.error("[email] newsletter confirmation sent", {
+    email,
+    id: result.id,
+  });
+}
+
 export async function sendContactNotification({
   email,
   message,
@@ -151,5 +179,37 @@ export async function sendContactNotification({
     id: result.id,
     name,
     to: config.to,
+  });
+}
+
+export async function sendContactAutoReply({
+  email,
+  name,
+}: Omit<ContactNotificationInput, "message">) {
+  const config = getNotificationConfig();
+  if (!config) {
+    console.error("[email] notification skipped: missing config", {
+      missing: getMissingNotificationConfigFields(),
+    });
+    return;
+  }
+
+  const result = await sendEmail({
+    from: config.from,
+    to: [email],
+    subject: "We received your message",
+    html: wrapEmailHtml("Thanks for reaching out", [
+      [
+        "Message",
+        `Hi ${name}, thanks for your message. I've received it and will get back to you as soon as possible.`,
+      ],
+      ["Reply address", config.to],
+    ]),
+  });
+
+  console.error("[email] contact auto reply sent", {
+    email,
+    id: result.id,
+    name,
   });
 }

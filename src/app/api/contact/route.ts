@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { contactFormSchema } from "@/modules/contact/schemas/contact";
-import { sendContactNotification } from "@/lib/email";
+import { sendContactAutoReply, sendContactNotification } from "@/lib/email";
 import { getSupabaseServiceRoleClient } from "@/lib/supabase/admin";
 
 export async function POST(request: Request) {
@@ -49,6 +49,15 @@ export async function POST(request: Request) {
     await sendContactNotification(parsed.data);
   } catch (err) {
     console.error("[api/contact] notification email failed", {
+      name: err instanceof Error ? err.name : typeof err,
+      message: err instanceof Error ? err.message : String(err),
+    });
+  }
+
+  try {
+    await sendContactAutoReply(parsed.data);
+  } catch (err) {
+    console.error("[api/contact] auto reply email failed", {
       name: err instanceof Error ? err.name : typeof err,
       message: err instanceof Error ? err.message : String(err),
     });

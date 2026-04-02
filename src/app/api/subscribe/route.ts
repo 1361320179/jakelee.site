@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { subscribeSchema } from "@/modules/newsletter/schemas/subscribe";
-import { sendSubscribeNotification } from "@/lib/email";
+import { sendSubscribeConfirmation, sendSubscribeNotification } from "@/lib/email";
 import { getSupabaseServiceRoleClient } from "@/lib/supabase/admin";
 
 export async function POST(request: Request) {
@@ -65,6 +65,15 @@ export async function POST(request: Request) {
     await sendSubscribeNotification(parsed.data);
   } catch (err) {
     console.error("[api/subscribe] notification email failed", {
+      name: err instanceof Error ? err.name : typeof err,
+      message: err instanceof Error ? err.message : String(err),
+    });
+  }
+
+  try {
+    await sendSubscribeConfirmation(parsed.data);
+  } catch (err) {
+    console.error("[api/subscribe] confirmation email failed", {
       name: err instanceof Error ? err.name : typeof err,
       message: err instanceof Error ? err.message : String(err),
     });
