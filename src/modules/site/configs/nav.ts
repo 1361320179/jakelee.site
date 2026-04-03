@@ -1,7 +1,7 @@
 export const mainNav = [
-  { label: "Home", href: "/" },
-  { label: "Blog", href: "/blog" },
-  { label: "Projects", href: "/projects" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
+  { key: "home", href: "/" },
+  { key: "blog", href: "/blog" },
+  { key: "projects", href: "/projects" },
+  { key: "about", href: "/about" },
+  { key: "contact", href: "/contact" },
 ] as const;

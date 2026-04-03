@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CalendarDays, Clock } from "lucide-react";
+import { getLanguageTag, getLocalizedPath, type SiteLocale } from "@/i18n/config";
 import type { PostMeta } from "@/modules/blog/schemas/post";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -11,10 +12,11 @@ import {
 } from "@/components/ui/card";
 
 type PostCardProps = {
+  locale: SiteLocale;
   post: PostMeta;
 };
 
-export function PostCard({ post }: PostCardProps) {
+export function PostCard({ locale, post }: PostCardProps) {
   return (
     <Card>
       <CardHeader>
@@ -22,7 +24,7 @@ export function PostCard({ post }: PostCardProps) {
           <span className="inline-flex items-center gap-1">
             <CalendarDays className="size-3.5" aria-hidden />
             <time dateTime={post.date}>
-              {new Date(post.date).toLocaleDateString(undefined, {
+              {new Date(post.date).toLocaleDateString(getLanguageTag(locale), {
                 year: "numeric",
                 month: "short",
                 day: "numeric",
@@ -40,7 +42,7 @@ export function PostCard({ post }: PostCardProps) {
           ) : null}
         </div>
         <CardTitle className="font-heading text-xl leading-snug sm:text-2xl">
-          <Link href={`/blog/${post.slug}`} className="hover:underline">
+          <Link href={getLocalizedPath(locale, `/blog/${post.slug}`)} className="hover:underline">
             {post.title}
           </Link>
         </CardTitle>
@@ -54,7 +56,10 @@ export function PostCard({ post }: PostCardProps) {
         <CardContent className="pt-0">
           <div className="flex flex-wrap gap-1.5">
             {post.tags.map((tag) => (
-              <Link key={tag} href={`/blog?tag=${encodeURIComponent(tag)}`}>
+              <Link
+                key={tag}
+                href={`${getLocalizedPath(locale, "/blog")}?tag=${encodeURIComponent(tag)}`}
+              >
                 <Badge variant="outline" className="font-normal hover:bg-accent">
                   {tag}
                 </Badge>

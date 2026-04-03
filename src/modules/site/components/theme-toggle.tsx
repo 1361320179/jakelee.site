@@ -2,11 +2,15 @@
 
 import * as React from "react";
 import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
+import { useTheme } from "@/modules/site/components/theme-provider";
 
-export function ThemeToggle() {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+export function ThemeToggle({
+  labels,
+}: {
+  labels: { switchToLight: string; switchToDark: string };
+}) {
+  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
@@ -19,14 +23,14 @@ export function ThemeToggle() {
         variant="ghost"
         size="icon"
         className="size-10 border border-border/70 bg-background/60"
-        aria-label="Toggle theme"
+        aria-label={labels.switchToDark}
       >
         <span className="size-4" />
       </Button>
     );
   }
 
-  const isDark = resolvedTheme === "dark" || theme === "dark";
+  const isDark = resolvedTheme === "dark";
 
   return (
     <Button
@@ -34,7 +38,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       className="size-10 border border-border/70 bg-background/60"
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={isDark ? labels.switchToLight : labels.switchToDark}
       onClick={() => setTheme(isDark ? "light" : "dark")}
     >
       {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}

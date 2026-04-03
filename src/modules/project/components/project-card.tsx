@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ExternalLink, GitBranch } from "lucide-react";
+import { getLocalizedPath, type SiteLocale } from "@/i18n/config";
 import type { ProjectMeta } from "@/modules/project/schemas/project";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -13,17 +14,24 @@ import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
 
 type ProjectCardProps = {
+  locale: SiteLocale;
   project: ProjectMeta;
+  labels: {
+    featured: string;
+    caseStudy: string;
+    liveDemo: string;
+    source: string;
+  };
 };
 
-export function ProjectCard({ project }: ProjectCardProps) {
+export function ProjectCard({ locale, project, labels }: ProjectCardProps) {
   return (
     <Card className="flex h-full flex-col">
       <CardHeader>
         <div className="flex flex-wrap items-center gap-2">
           {project.featured ? (
             <Badge variant="default" className="font-normal">
-              Featured
+              {labels.featured}
             </Badge>
           ) : null}
           {project.status ? (
@@ -33,7 +41,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
           ) : null}
         </div>
         <CardTitle className="font-heading text-xl leading-snug sm:text-2xl">
-          <Link href={`/projects/${project.slug}`} className="hover:underline">
+          <Link
+            href={getLocalizedPath(locale, `/projects/${project.slug}`)}
+            className="hover:underline"
+          >
             {project.title}
           </Link>
         </CardTitle>
@@ -53,10 +64,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
         ) : null}
         <div className="flex flex-wrap gap-2">
           <Link
-            href={`/projects/${project.slug}`}
+            href={getLocalizedPath(locale, `/projects/${project.slug}`)}
             className={cn(buttonVariants({ variant: "default", size: "sm" }))}
           >
-            Case study
+            {labels.caseStudy}
           </Link>
           {project.demoUrl ? (
             <a
@@ -68,7 +79,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
                 "inline-flex items-center gap-1",
               )}
             >
-              Live demo
+              {labels.liveDemo}
               <ExternalLink className="size-3.5" />
             </a>
           ) : null}
@@ -83,7 +94,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
               )}
             >
               <GitBranch className="size-3.5" />
-              Source
+              {labels.source}
             </a>
           ) : null}
         </div>

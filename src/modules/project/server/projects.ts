@@ -7,16 +7,33 @@ import { compileMDX } from "next-mdx-remote/rsc";
 import rehypeSlug from "rehype-slug";
 import rehypePrettyCode from "rehype-pretty-code";
 import { createMdxComponents } from "@/modules/blog/components/mdx-elements";
+import { defaultLocale, type SiteLocale } from "@/i18n/config";
 import {
   projectFrontmatterSchema,
   type ProjectMeta,
 } from "@/modules/project/schemas/project";
 
-const PROJECTS_DIR = path.join(process.cwd(), "src/content/projects");
+const PROJECTS_ROOT = path.join(
+  /* turbopackIgnore: true */ process.cwd(),
+  "src/content/projects",
+);
 
-function listProjectFilenames(): string[] {
-  if (!fs.existsSync(PROJECTS_DIR)) return [];
-  return fs.readdirSync(PROJECTS_DIR).filter((f) => f.endsWith(".mdx"));
+function getProjectsDir(locale: SiteLocale) {
+  return path.join(PROJECTS_ROOT, locale);
+}
+
+function resolveProjectsDir(locale: SiteLocale) {
+  const localizedDir = getProjectsDir(locale);
+  if (fs.existsSync(localizedDir)) return localizedDir;
+  const defaultDir = getProjectsDir(defaultLocale);
+  if (fs.existsSync(defaultDir)) return defaultDir;
+  return PROJECTS_ROOT;
+}
+
+function listProjectFilenames(locale: SiteLocale): string[] {
+  const projectsDir = resolveProjectsDir(locale);
+  if (!fs.existsSync(projectsDir)) return [];
+  return fs.readdirSync(projectsDir).filter((f) => f.endsWith(".mdx"));
 }
 
 function slugFromFilename(filename: string): string {
@@ -35,11 +52,12 @@ function parseMeta(slug: string, data: unknown): ProjectMeta | null {
   return { ...frontmatter, slug };
 }
 
-export const getAllProjectsMeta = cache((): ProjectMeta[] => {
+export const getAllProjectsMeta = cache((locale: SiteLocale): ProjectMeta[] => {
   const metas: ProjectMeta[] = [];
-  for (const file of listProjectFilenames()) {
+  const projectsDir = resolveProjectsDir(locale);
+  for (const file of listProjectFilenames(locale)) {
     const slug = slugFromFilename(file);
-    const raw = fs.readFileSync(path.join(PROJECTS_DIR, file), "utf8");
+    const raw = fs.readFileSync(path.join(projectsDir, file), "utf8");
     const { data } = matter(raw);
     const meta = parseMeta(slug, data);
     if (meta) metas.push(meta);
@@ -57,8 +75,8 @@ export type CompiledProject = {
 };
 
 export const getProjectBySlug = cache(
-  async (slug: string): Promise<CompiledProject | null> => {
-    const filePath = path.join(PROJECTS_DIR, `${slug}.mdx`);
+  async (locale: SiteLocale, slug: string): Promise<CompiledProject | null> => {
+    const filePath = path.join(resolveProjectsDir(locale), `${slug}.mdx`);
     if (!fs.existsSync(filePath)) return null;
 
     const raw = fs.readFileSync(filePath, "utf8");

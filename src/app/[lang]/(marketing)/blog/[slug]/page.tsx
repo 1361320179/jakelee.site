@@ -2,46 +2,59 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { CalendarDays, Clock } from "lucide-react";
-import { siteConfig } from "@/modules/site/configs/site";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { getLanguageTag, getLocalizedPath, locales } from "@/i18n/config";
+import { getLocaleAlternates, getLocaleDictionary } from "@/i18n/server";
+import { JsonLd } from "@/modules/seo/jsonld/json-ld";
+import { getBlogPostingJsonLd } from "@/modules/seo/jsonld/site-graph";
+import { PostCard } from "@/modules/blog/components/post-card";
+import { TableOfContents } from "@/modules/blog/components/table-of-contents";
 import {
   getAdjacentPosts,
   getAllPostsMeta,
   getPostBySlug,
   getRelatedPosts,
 } from "@/modules/blog/server/posts";
-import { TableOfContents } from "@/modules/blog/components/table-of-contents";
-import { PostCard } from "@/modules/blog/components/post-card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { JsonLd } from "@/modules/seo/jsonld/json-ld";
-import { getBlogPostingJsonLd } from "@/modules/seo/jsonld/site-graph";
+import { siteConfig } from "@/modules/site/configs/site";
 
-type Props = { params: Promise<{ slug: string }> };
+type BlogPostPageProps = {
+  params: Promise<{ lang: string; slug: string }>;
+};
+
+export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  return getAllPostsMeta().map((p) => ({ slug: p.slug }));
+  return locales.flatMap((lang) =>
+    getAllPostsMeta(lang).map((post) => ({ lang, slug: post.slug })),
+  );
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const post = await getPostBySlug(slug);
-  if (!post) return { title: "Not found" };
+export async function generateMetadata({
+  params,
+}: BlogPostPageProps): Promise<Metadata> {
+  const { lang, slug } = await params;
+  const { locale, dictionary } = await getLocaleDictionary(lang);
+  const post = await getPostBySlug(locale, slug);
+  if (!post) return { title: dictionary.metadata.notFound };
 
   const { meta } = post;
   const title = meta.seoTitle ?? meta.title;
-  const description = meta.seoDescription ?? meta.description ?? siteConfig.description;
-  const canonical = `${siteConfig.url}/blog/${meta.slug}`;
-
+  const description = meta.seoDescription ?? meta.description ?? dictionary.site.description;
+  const canonical = `/${locale}/blog/${meta.slug}`;
   const ogImage = `/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(description)}`;
 
   return {
     title,
     description,
-    alternates: { canonical: meta.canonicalUrl ?? canonical },
+    alternates: {
+      canonical,
+      languages: getLocaleAlternates(`/blog/${meta.slug}`),
+    },
     openGraph: {
       title,
       description,
-      url: canonical,
+      url: `${siteConfig.url.replace(/\/$/, "")}${canonical}`,
       type: "article",
       publishedTime: meta.date,
       modifiedTime: meta.updated,
@@ -56,26 +69,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export const revalidate = 3600;
-
-export default async function BlogPostPage({ params }: Props) {
-  const { slug } = await params;
-  const post = await getPostBySlug(slug);
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { lang, slug } = await params;
+  const { locale, dictionary } = await getLocaleDictionary(lang);
+  const post = await getPostBySlug(locale, slug);
   if (!post) notFound();
 
   const { meta, content, toc } = post;
-  const related = getRelatedPosts(slug);
-  const { prev, next } = getAdjacentPosts(slug);
+  const related = getRelatedPosts(locale, slug);
+  const { prev, next } = getAdjacentPosts(locale, slug);
+  const languageTag = getLanguageTag(locale);
 
   return (
     <article className="page-shell">
       <JsonLd
         data={getBlogPostingJsonLd({
+          locale,
           title: meta.title,
           description: meta.description,
           datePublished: meta.date,
           dateModified: meta.updated,
-          url: `${siteConfig.url.replace(/\/$/, "")}/blog/${meta.slug}`,
+          url: `${siteConfig.url.replace(/\/$/, "")}/${locale}/blog/${meta.slug}`,
         })}
       />
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_240px]">
@@ -85,7 +99,7 @@ export default async function BlogPostPage({ params }: Props) {
               <span className="inline-flex items-center gap-1">
                 <CalendarDays className="size-4" aria-hidden />
                 <time dateTime={meta.date}>
-                  {new Date(meta.date).toLocaleDateString(undefined, {
+                  {new Date(meta.date).toLocaleDateString(languageTag, {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
@@ -94,8 +108,8 @@ export default async function BlogPostPage({ params }: Props) {
               </span>
               {meta.updated ? (
                 <span className="text-xs">
-                  · Updated{" "}
-                  {new Date(meta.updated).toLocaleDateString(undefined, {
+                  {dictionary.common.updated}{" "}
+                  {new Date(meta.updated).toLocaleDateString(languageTag, {
                     year: "numeric",
                     month: "short",
                     day: "numeric",
@@ -104,11 +118,9 @@ export default async function BlogPostPage({ params }: Props) {
               ) : null}
               <span className="inline-flex items-center gap-1">
                 <Clock className="size-4" aria-hidden />
-                {meta.readingMinutes} min read
+                {meta.readingMinutes} {dictionary.common.minRead}
               </span>
-              {meta.category ? (
-                <Badge variant="secondary">{meta.category}</Badge>
-              ) : null}
+              {meta.category ? <Badge variant="secondary">{meta.category}</Badge> : null}
             </div>
             <h1 className="font-heading mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
               {meta.title}
@@ -121,7 +133,10 @@ export default async function BlogPostPage({ params }: Props) {
             {meta.tags.length > 0 ? (
               <div className="mt-6 flex flex-wrap gap-2">
                 {meta.tags.map((tag) => (
-                  <Link key={tag} href={`/blog?tag=${encodeURIComponent(tag)}`}>
+                  <Link
+                    key={tag}
+                    href={`${getLocalizedPath(locale, "/blog")}?tag=${encodeURIComponent(tag)}`}
+                  >
                     <Badge variant="outline" className="font-normal hover:bg-accent">
                       {tag}
                     </Badge>
@@ -151,10 +166,12 @@ export default async function BlogPostPage({ params }: Props) {
           >
             {prev ? (
               <Link
-                href={`/blog/${prev.slug}`}
+                href={getLocalizedPath(locale, `/blog/${prev.slug}`)}
                 className="group max-w-[min(100%,20rem)] rounded-[1.5rem] border border-border/70 bg-card/70 p-4 transition-colors hover:bg-muted/50"
               >
-                <span className="text-xs text-muted-foreground">Older</span>
+                <span className="text-xs text-muted-foreground">
+                  {dictionary.common.older}
+                </span>
                 <p className="mt-1 font-medium group-hover:underline">{prev.title}</p>
               </Link>
             ) : (
@@ -162,10 +179,12 @@ export default async function BlogPostPage({ params }: Props) {
             )}
             {next ? (
               <Link
-                href={`/blog/${next.slug}`}
+                href={getLocalizedPath(locale, `/blog/${next.slug}`)}
                 className="group max-w-[min(100%,20rem)] rounded-[1.5rem] border border-border/70 bg-card/70 p-4 text-right transition-colors hover:bg-muted/50 sm:ml-auto"
               >
-                <span className="text-xs text-muted-foreground">Newer</span>
+                <span className="text-xs text-muted-foreground">
+                  {dictionary.common.newer}
+                </span>
                 <p className="mt-1 font-medium group-hover:underline">{next.title}</p>
               </Link>
             ) : (
@@ -176,12 +195,12 @@ export default async function BlogPostPage({ params }: Props) {
           {related.length > 0 ? (
             <section className="mt-16">
               <h2 className="font-heading text-2xl font-semibold tracking-tight">
-                Related
+                {dictionary.common.related}
               </h2>
               <ul className="mt-6 space-y-6">
-                {related.map((p) => (
-                  <li key={p.slug}>
-                    <PostCard post={p} />
+                {related.map((relatedPost) => (
+                  <li key={relatedPost.slug}>
+                    <PostCard post={relatedPost} locale={locale} />
                   </li>
                 ))}
               </ul>
@@ -191,7 +210,7 @@ export default async function BlogPostPage({ params }: Props) {
 
         {toc.length > 0 ? (
           <aside className="hidden lg:block">
-            <TableOfContents items={toc} />
+            <TableOfContents items={toc} title={dictionary.common.onThisPage} />
           </aside>
         ) : null}
       </div>

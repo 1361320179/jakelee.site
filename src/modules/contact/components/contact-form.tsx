@@ -6,7 +6,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-export function ContactForm() {
+type ContactFormLabels = {
+  name: string;
+  email: string;
+  message: string;
+  messagePlaceholder: string;
+  submit: string;
+  submitting: string;
+  success: string;
+  networkError: string;
+};
+
+export function ContactForm({ labels }: { labels: ContactFormLabels }) {
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<{ type: "ok" | "err"; text: string } | null>(
     null,
@@ -41,10 +52,10 @@ export function ContactForm() {
         return;
       }
 
-      setMessage({ type: "ok", text: "Thanks - your message was sent." });
+      setMessage({ type: "ok", text: labels.success });
       form.reset();
     } catch {
-      setMessage({ type: "err", text: "Network error. Try again in a moment." });
+      setMessage({ type: "err", text: labels.networkError });
     } finally {
       setPending(false);
     }
@@ -53,11 +64,11 @@ export function ContactForm() {
   return (
     <form onSubmit={onSubmit} className="max-w-2xl space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
+        <Label htmlFor="name">{labels.name}</Label>
         <Input id="name" name="name" required autoComplete="name" maxLength={120} />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">{labels.email}</Label>
         <Input
           id="email"
           name="email"
@@ -68,19 +79,19 @@ export function ContactForm() {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="message">Message</Label>
+        <Label htmlFor="message">{labels.message}</Label>
         <Textarea
           id="message"
           name="message"
           required
           rows={6}
           maxLength={8000}
-          placeholder="What are you building, and how can I help?"
+          placeholder={labels.messagePlaceholder}
         />
       </div>
 
       <Button type="submit" disabled={pending} className="px-5">
-        {pending ? "Sending..." : "Send message"}
+        {pending ? labels.submitting : labels.submit}
       </Button>
 
       {message ? (

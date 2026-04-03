@@ -1,0 +1,34 @@
+---
+title: "用 MDX 搭建可扩展的个人站"
+description: "为什么 MDX 很适合会逐步演化成平台的个人品牌网站，以及静态生成如何保持速度优势。"
+date: "2026-03-15"
+category: "engineering"
+tags:
+  - nextjs
+  - mdx
+  - architecture
+---
+
+这篇文章用来展示 **MDX**、带语法高亮的代码块，以及未来可以平滑扩展到 CMS 或数据库的内容结构。
+
+## 为什么先用 MDX
+
+基于 Git 的内容管理让草稿可以放在分支里，差异清晰可读，部署路径也更可控。等你需要定时发布、协作编辑或非技术同学参与时，再把相同 slug 迁到 Postgres 或 Payload，也不必重写路由。
+
+## 代码示例
+
+```ts
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  return getAllSlugs().map((slug) => ({ slug }));
+}
+```
+
+## 接下来可以加什么
+
+标签、分类和 RSS 能帮助读者发现更多内容。联系表单和订阅入口则能把流量转成后续关系，而不需要一开始就接入庞大的 CMS。
+
+### 用于目录的小标题
+
+在大屏幕上，这一节应该会出现在文章旁边的目录里。

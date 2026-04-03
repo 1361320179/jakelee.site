@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { getLocalizedPath, type SiteLocale } from "@/i18n/config";
 import type { PostMeta } from "@/modules/blog/schemas/post";
 import { PostCard } from "@/modules/blog/components/post-card";
 import { Input } from "@/components/ui/input";
@@ -9,11 +10,25 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 type BlogListClientProps = {
+  locale: SiteLocale;
   posts: PostMeta[];
   allTags: string[];
+  labels: {
+    searchLabel: string;
+    searchPlaceholder: string;
+    tags: string;
+    all: string;
+    filteringByTag: string;
+    noMatches: string;
+  };
 };
 
-export function BlogListClient({ posts, allTags }: BlogListClientProps) {
+export function BlogListClient({
+  locale,
+  posts,
+  allTags,
+  labels,
+}: BlogListClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tagFromUrl = searchParams.get("tag") ?? "";
@@ -35,7 +50,8 @@ export function BlogListClient({ posts, allTags }: BlogListClientProps) {
     if (tag) params.set("tag", tag);
     else params.delete("tag");
     const qs = params.toString();
-    router.push(qs ? `/blog?${qs}` : "/blog", { scroll: false });
+    const href = getLocalizedPath(locale, "/blog");
+    router.push(qs ? `${href}?${qs}` : href, { scroll: false });
   }
 
   return (
@@ -43,12 +59,12 @@ export function BlogListClient({ posts, allTags }: BlogListClientProps) {
       <div className="surface-panel flex flex-col gap-4 rounded-[1.75rem] p-4 sm:flex-row sm:items-end sm:justify-between sm:p-5">
         <div className="max-w-md flex-1">
           <label htmlFor="blog-search" className="sr-only">
-            Search posts
+            {labels.searchLabel}
           </label>
           <Input
             id="blog-search"
             type="search"
-            placeholder="Search title, tags, description..."
+            placeholder={labels.searchPlaceholder}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -57,7 +73,7 @@ export function BlogListClient({ posts, allTags }: BlogListClientProps) {
 
       {allTags.length > 0 ? (
         <div className="flex flex-wrap gap-2">
-          <span className="text-sm text-muted-foreground">Tags:</span>
+          <span className="text-sm text-muted-foreground">{labels.tags}:</span>
           <button
             type="button"
             onClick={() => setTag(null)}
@@ -68,7 +84,7 @@ export function BlogListClient({ posts, allTags }: BlogListClientProps) {
                 : "border-border hover:bg-accent",
             )}
           >
-            All
+            {labels.all}
           </button>
           {allTags.map((tag) => (
             <button
@@ -90,7 +106,7 @@ export function BlogListClient({ posts, allTags }: BlogListClientProps) {
 
       {tagFromUrl ? (
         <p className="text-sm text-muted-foreground">
-          Filtering by tag:{" "}
+          {labels.filteringByTag}{" "}
           <Badge variant="secondary" className="font-normal">
             {tagFromUrl}
           </Badge>
@@ -99,13 +115,13 @@ export function BlogListClient({ posts, allTags }: BlogListClientProps) {
 
       {filtered.length === 0 ? (
         <p className="surface-panel rounded-[1.75rem] border-dashed px-4 py-12 text-center text-muted-foreground">
-          No posts match your filters.
+          {labels.noMatches}
         </p>
       ) : (
         <ul className="space-y-6">
           {filtered.map((post) => (
             <li key={post.slug}>
-              <PostCard post={post} />
+              <PostCard post={post} locale={locale} />
             </li>
           ))}
         </ul>

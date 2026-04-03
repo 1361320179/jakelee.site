@@ -2,7 +2,18 @@ import Link from "next/link";
 import { siteConfig } from "@/modules/site/configs/site";
 import { SubscribeForm } from "@/modules/newsletter/components/subscribe-form";
 
-export function SiteFooter() {
+export function SiteFooter({
+  labels,
+}: {
+  labels: {
+    title: string;
+    description: string;
+    submit: string;
+    success: string;
+    error: string;
+    emailLabel: string;
+  };
+}) {
   const year = new Date().getFullYear();
 
   return (
@@ -11,13 +22,20 @@ export function SiteFooter() {
         <div className="surface-panel overflow-hidden rounded-[2rem]">
           <div className="grid gap-8 px-5 py-8 sm:px-8 sm:py-10 lg:grid-cols-[1.2fr_0.8fr]">
             <div>
-              <p className="eyebrow">Newsletter</p>
+              <p className="eyebrow">{labels.title}</p>
               <p className="mt-4 max-w-lg text-sm text-muted-foreground">
-                Occasional updates on posts and projects. No spam - unsubscribe anytime.
+                {labels.description}
               </p>
             </div>
             <div className="relative">
-              <SubscribeForm />
+              <SubscribeForm
+                labels={{
+                  submit: labels.submit,
+                  success: labels.success,
+                  error: labels.error,
+                  emailLabel: labels.emailLabel,
+                }}
+              />
             </div>
           </div>
 
@@ -26,7 +44,7 @@ export function SiteFooter() {
               <div>
                 <p className="font-heading text-xl font-semibold">{siteConfig.name}</p>
                 <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
-                  {siteConfig.description}
+                  {labels.description}
                 </p>
               </div>
 

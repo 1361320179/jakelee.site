@@ -5,7 +5,10 @@ export default function BlogLoading() {
       <div className="mt-4 h-6 w-full max-w-lg animate-pulse rounded bg-muted" />
       <div className="mt-10 space-y-6">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-40 animate-pulse rounded-xl border border-border/60 bg-muted/30" />
+          <div
+            key={i}
+            className="h-40 animate-pulse rounded-xl border border-border/60 bg-muted/30"
+          />
         ))}
       </div>
     </div>

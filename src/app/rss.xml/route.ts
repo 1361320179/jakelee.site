@@ -1,3 +1,5 @@
+import { defaultLocale, getLanguageTag } from "@/i18n/config";
+import { getDictionary } from "@/i18n/dictionaries";
 import { siteConfig } from "@/modules/site/configs/site";
 import { getAllPostsMeta } from "@/modules/blog/server/posts";
 
@@ -12,7 +14,8 @@ function escapeXml(text: string) {
 
 export async function GET() {
   const base = siteConfig.url.replace(/\/$/, "");
-  const posts = getAllPostsMeta().slice(0, 50);
+  const dictionary = await getDictionary(defaultLocale);
+  const posts = getAllPostsMeta(defaultLocale).slice(0, 50);
 
   const items = posts
     .map(
@@ -31,9 +34,9 @@ export async function GET() {
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>${escapeXml(siteConfig.name)}</title>
-    <link>${base}</link>
-    <description>${escapeXml(siteConfig.description)}</description>
-    <language>${siteConfig.locale}</language>
+    <link>${base}/${defaultLocale}</link>
+    <description>${escapeXml(dictionary.site.description)}</description>
+    <language>${getLanguageTag(defaultLocale)}</language>
     <atom:link href="${base}/rss.xml" rel="self" type="application/rss+xml" />
     ${items}
   </channel>

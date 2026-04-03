@@ -4,7 +4,14 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export function SubscribeForm() {
+type SubscribeFormLabels = {
+  submit: string;
+  success: string;
+  error: string;
+  emailLabel: string;
+};
+
+export function SubscribeForm({ labels }: { labels: SubscribeFormLabels }) {
   const [pending, setPending] = useState(false);
   const [status, setStatus] = useState<"idle" | "ok" | "err">("idle");
 
@@ -47,20 +54,18 @@ export function SubscribeForm() {
           required
           autoComplete="email"
           placeholder="you@example.com"
-          aria-label="Email for newsletter"
+          aria-label={labels.emailLabel}
           className="flex-1"
         />
         <Button type="submit" disabled={pending} className="shrink-0 sm:px-5">
-          {pending ? "..." : "Subscribe"}
+          {pending ? "..." : labels.submit}
         </Button>
       </form>
       {status === "ok" ? (
-        <span className="text-xs text-muted-foreground">You&apos;re on the list.</span>
+        <span className="text-xs text-muted-foreground">{labels.success}</span>
       ) : null}
       {status === "err" ? (
-        <span className="text-xs text-destructive">
-          Could not subscribe right now. Try again in a moment.
-        </span>
+        <span className="text-xs text-destructive">{labels.error}</span>
       ) : null}
     </div>
   );

@@ -2,49 +2,65 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ExternalLink, GitBranch } from "lucide-react";
-import { siteConfig } from "@/modules/site/configs/site";
-import { getAllProjectsMeta, getProjectBySlug } from "@/modules/project/server/projects";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { getLocalizedPath, locales } from "@/i18n/config";
+import { getLocaleAlternates, getLocaleDictionary } from "@/i18n/server";
+import { getAllProjectsMeta, getProjectBySlug } from "@/modules/project/server/projects";
+import { siteConfig } from "@/modules/site/configs/site";
 
-type Props = { params: Promise<{ slug: string }> };
+type ProjectDetailPageProps = {
+  params: Promise<{ lang: string; slug: string }>;
+};
+
+export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  return getAllProjectsMeta().map((p) => ({ slug: p.slug }));
+  return locales.flatMap((lang) =>
+    getAllProjectsMeta(lang).map((project) => ({ lang, slug: project.slug })),
+  );
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const project = await getProjectBySlug(slug);
-  if (!project) return { title: "Not found" };
+export async function generateMetadata({
+  params,
+}: ProjectDetailPageProps): Promise<Metadata> {
+  const { lang, slug } = await params;
+  const { locale, dictionary } = await getLocaleDictionary(lang);
+  const project = await getProjectBySlug(locale, slug);
+  if (!project) return { title: dictionary.metadata.notFound };
 
   const { meta } = project;
-  const description = meta.summary;
+  const canonical = `/${locale}/projects/${meta.slug}`;
 
   return {
     title: meta.title,
-    description,
+    description: meta.summary,
+    alternates: {
+      canonical,
+      languages: getLocaleAlternates(`/projects/${meta.slug}`),
+    },
     openGraph: {
       title: meta.title,
-      description,
-      url: `${siteConfig.url}/projects/${meta.slug}`,
+      description: meta.summary,
+      url: `${siteConfig.url.replace(/\/$/, "")}${canonical}`,
       type: "article",
     },
     twitter: {
       card: "summary_large_image",
       title: meta.title,
-      description,
+      description: meta.summary,
     },
   };
 }
 
-export const revalidate = 3600;
-
-export default async function ProjectDetailPage({ params }: Props) {
-  const { slug } = await params;
-  const project = await getProjectBySlug(slug);
+export default async function ProjectDetailPage({
+  params,
+}: ProjectDetailPageProps) {
+  const { lang, slug } = await params;
+  const { locale, dictionary } = await getLocaleDictionary(lang);
+  const project = await getProjectBySlug(locale, slug);
   if (!project) notFound();
 
   const { meta, content } = project;
@@ -53,7 +69,7 @@ export default async function ProjectDetailPage({ params }: Props) {
     <article className="page-shell max-w-4xl">
       <header className="page-hero mb-10 px-6 py-8 sm:px-8 sm:py-10">
         <div className="flex flex-wrap gap-2">
-          {meta.featured ? <Badge>Featured</Badge> : null}
+          {meta.featured ? <Badge>{dictionary.common.featured}</Badge> : null}
           {meta.status ? (
             <Badge variant="secondary" className="capitalize">
               {meta.status}
@@ -63,7 +79,9 @@ export default async function ProjectDetailPage({ params }: Props) {
         <h1 className="font-heading mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
           {meta.title}
         </h1>
-        <p className="mt-4 text-xl text-muted-foreground leading-relaxed">{meta.summary}</p>
+        <p className="mt-4 text-xl text-muted-foreground leading-relaxed">
+          {meta.summary}
+        </p>
 
         {meta.techStack.length > 0 ? (
           <div className="mt-6 flex flex-wrap gap-2">
@@ -86,7 +104,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                 "inline-flex items-center gap-2",
               )}
             >
-              View demo
+              {dictionary.projects.viewDemo}
               <ExternalLink className="size-4" />
             </a>
           ) : null}
@@ -101,11 +119,14 @@ export default async function ProjectDetailPage({ params }: Props) {
               )}
             >
               <GitBranch className="size-4" />
-              Repository
+              {dictionary.projects.repository}
             </a>
           ) : null}
-          <Link href="/projects" className={cn(buttonVariants({ variant: "ghost" }))}>
-            All projects
+          <Link
+            href={getLocalizedPath(locale, "/projects")}
+            className={cn(buttonVariants({ variant: "ghost" }))}
+          >
+            {dictionary.common.viewAllProjects}
           </Link>
         </div>
       </header>
@@ -125,8 +146,11 @@ export default async function ProjectDetailPage({ params }: Props) {
       <Separator className="my-12" />
 
       <p className="text-sm text-muted-foreground">
-        <Link href="/projects" className="text-primary underline-offset-4 hover:underline">
-          ← Back to projects
+        <Link
+          href={getLocalizedPath(locale, "/projects")}
+          className="text-primary underline-offset-4 hover:underline"
+        >
+          {dictionary.common.backToProjects}
         </Link>
       </p>
     </article>

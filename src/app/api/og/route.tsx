@@ -1,14 +1,17 @@
 import { ImageResponse } from "next/og";
+import { defaultLocale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/dictionaries";
 import { siteConfig } from "@/modules/site/configs/site";
 
 export const runtime = "edge";
 
 export async function GET(request: Request) {
+  const dictionary = await getDictionary(defaultLocale);
   const { searchParams } = new URL(request.url);
   const title =
     searchParams.get("title")?.slice(0, 120) ?? siteConfig.title;
   const subtitle =
-    searchParams.get("subtitle")?.slice(0, 220) ?? siteConfig.description;
+    searchParams.get("subtitle")?.slice(0, 220) ?? dictionary.site.description;
 
   return new ImageResponse(
     (

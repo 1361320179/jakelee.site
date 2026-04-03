@@ -6,10 +6,15 @@ import type { TocItem } from "@/modules/blog/utils/toc";
 
 type TableOfContentsProps = {
   items: TocItem[];
+  title: string;
   className?: string;
 };
 
-export function TableOfContents({ items, className }: TableOfContentsProps) {
+export function TableOfContents({
+  items,
+  title,
+  className,
+}: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -50,7 +55,7 @@ export function TableOfContents({ items, className }: TableOfContentsProps) {
         className,
       )}
     >
-      <p className="mb-3 font-heading font-semibold text-foreground">On this page</p>
+      <p className="mb-3 font-heading font-semibold text-foreground">{title}</p>
       <ul className="space-y-1 border-l border-border/70">
         {items.map((item) => (
           <li

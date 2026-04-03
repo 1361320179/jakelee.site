@@ -1,0 +1,26 @@
+---
+title: "jakelee.site"
+summary: "一个模块化的 Next.js 个人品牌站点：使用 MDX 管理内容、以静态路由为主，并预留接入 Supabase 转化链路的空间。"
+date: "2026-04-01"
+techStack:
+  - Next.js
+  - TypeScript
+  - Tailwind CSS
+  - MDX
+repoUrl: "https://github.com"
+demoUrl: "https://example.com"
+featured: true
+status: active
+---
+
+## 问题
+
+很多个人站都是从博客开始，后来不断叠加零散页面，直到重构成本开始拖慢迭代速度。
+
+## 做法
+
+通过 route groups 把营销页面和 API 能力隔离开。内容先放在 Git 里管理，等需要时再让数据库表接管订阅和联系消息。
+
+## 结果
+
+最终得到一个可以继续演进到 Payload 或自定义后台的单一代码库，而不需要重写已有公开链接。

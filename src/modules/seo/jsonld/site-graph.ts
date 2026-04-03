@@ -1,8 +1,12 @@
+import { getLanguageTag, type SiteLocale } from "@/i18n/config";
 import { siteConfig } from "@/modules/site/configs/site";
 
 const base = siteConfig.url.replace(/\/$/, "");
 
-export function getSiteGraphJsonLd() {
+export function getSiteGraphJsonLd(
+  locale: SiteLocale,
+  description: string,
+) {
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -10,16 +14,16 @@ export function getSiteGraphJsonLd() {
         "@type": "WebSite",
         "@id": `${base}/#website`,
         name: siteConfig.name,
-        description: siteConfig.description,
-        url: base,
-        inLanguage: siteConfig.locale,
+        description,
+        url: `${base}/${locale}`,
+        inLanguage: getLanguageTag(locale),
         publisher: { "@id": `${base}/#person` },
       },
       {
         "@type": "Person",
         "@id": `${base}/#person`,
         name: siteConfig.name,
-        url: base,
+        url: `${base}/${locale}`,
         sameAs: [siteConfig.links.github, siteConfig.links.twitter],
       },
     ],
@@ -27,6 +31,7 @@ export function getSiteGraphJsonLd() {
 }
 
 export function getBlogPostingJsonLd(input: {
+  locale: SiteLocale;
   title: string;
   description?: string;
   datePublished: string;
@@ -42,11 +47,16 @@ export function getBlogPostingJsonLd(input: {
     dateModified: input.dateModified ?? input.datePublished,
     url: input.url,
     mainEntityOfPage: input.url,
-    author: { "@type": "Person", name: siteConfig.name, url: base },
+    inLanguage: getLanguageTag(input.locale),
+    author: {
+      "@type": "Person",
+      name: siteConfig.name,
+      url: `${base}/${input.locale}`,
+    },
     publisher: {
       "@type": "Organization",
       name: siteConfig.name,
-      url: base,
+      url: `${base}/${input.locale}`,
     },
   };
 }
