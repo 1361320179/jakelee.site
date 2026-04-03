@@ -126,7 +126,7 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
   en: {
     site: {
       description:
-        "Personal brand, premium blog posts, and project case studies - delivering enterprise-level development and services.",
+        "A personal brand site featuring curated blog posts and project case studies, offering enterprise-grade development and services.",
     },
     navigation: {
       home: "Home",
@@ -157,7 +157,7 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
     home: {
       eyebrow: "Personal brand / Content / Platform",
       title:
-        "Deeply improve user experience, create high-quality products, and build lasting impact.",
+        "Improve user experience, build polished work, and create lasting impact.",
       primaryCta: "Get in touch",
       secondaryCta: "Read the blog",
       cardIntroTitle: "Jake Lee",
@@ -167,19 +167,19 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
       whatTitle: "What you'll find here",
       writingTitle: "Writing",
       writingBody:
-        "Long-form posts, notes, and playbooks - optimized for reading and SEO.",
+        "Long-form articles, technical notes, and practical guides, balancing readability and SEO.",
       writingCta: "Browse blog",
       projectsTitle: "Projects",
       projectsBody:
-        "Case-based disassembly of the technology stack, key technical points, and online links.",
+        "Case-style breakdowns of the tech stack, key technical points, and live links.",
       projectsCta: "View work",
       collaborationTitle: "Collaboration",
       collaborationBody:
-        "Feel free to reach out and subscribe for deeper discussions and future collaboration.",
+        "Feel free to reach out or subscribe if you'd like to stay connected for deeper conversations and future collaboration.",
       collaborationCta: "Contact",
       nextStepTitle: "Next step",
       nextStepBody:
-        "Tell me what you're building - or subscribe once the newsletter goes live.",
+        "Tell me what you're working on, or subscribe now and get notified when the newsletter goes live.",
       nextStepCta: "Start a conversation",
     },
     blog: {
@@ -195,7 +195,7 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
     projects: {
       title: "Projects",
       description:
-        "Use case studies to showcase your tech stack, highlight key technical insights, and link to real-world results—so your portfolio can keep evolving over time.",
+        "A case-based record of the tech stack, key technical points, and project links, with the portfolio continuing to grow over time.",
       empty: "No projects published yet.",
       caseStudy: "Case study",
       liveDemo: "Live demo",
@@ -206,36 +206,35 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
     about: {
       title: "About",
       description:
-        "This page is your branded story: who you are, what you optimize for, and how you work with others. Replace this copy with your voice.",
+        "I'm Jake Lee, a frontend engineer with seven years of experience developing and delivering mature products across industries including the internet, education, academic publishing, and government services.",
       focusTitle: "Focus",
       focusBody:
-        "Frontend architecture, performance, and product-minded engineering - with room to grow into courses, templates, and advisory as your IP matures.",
+        "My strengths include frontend architecture, performance optimization, user experience improvement, and engineering practice informed by product thinking.",
       workTitle: "How I work",
       workBody:
-        "Short iterations, explicit tradeoffs, and documentation that survives handoff. Detail your rituals and tools here when you are ready.",
-      talkTitle: "Let's talk",
+        "Quickly break down requirements and continuously deliver phased technical solutions and project outcomes.",
+      talkTitle: "Feel free to reach out",
       talkBody:
-        "Use the contact form for inquiries, collaborations, or speaking - the site is built to add booking and downloads without a rewrite.",
+        "You can contact me about collaboration, consulting, or development needs. I look forward to working with you.",
     },
     contact: {
       title: "Contact",
       description:
-        "Share a short brief and the best email to reach you. Messages are stored through the contact API route and forwarded to my inbox.",
+        "Tell me a bit about your needs and leave your email address. I'll get back to you as soon as possible.",
       name: "Name",
       email: "Email",
       message: "Message",
       messagePlaceholder: "What are you building, and how can I help?",
       submit: "Send message",
       submitting: "Sending...",
-      success: "Thanks - your message was sent.",
+      success: "Received. Your message was sent successfully.",
       networkError: "Network error. Try again in a moment.",
     },
     newsletter: {
-      title: "Newsletter",
-      description:
-        "Occasional updates on posts and projects. No spam - unsubscribe anytime.",
+      title: "Subscribe for updates",
+      description: "Occasional updates on new articles and project updates.",
       submit: "Subscribe",
-      success: "You're on the list.",
+      success: "You've been added to the subscriber list.",
       error: "Could not subscribe right now. Try again in a moment.",
     },
     notFound: {
@@ -247,16 +246,16 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
       titleTemplate: "%s | Jake Lee",
       blog: "Blog",
       blogDescription:
-        "Articles and notes from Jake Lee - engineering, performance, and product craft.",
+        "Articles and notes from Jake Lee, focused on engineering practice, performance, and product thinking.",
       projects: "Projects",
       projectsDescription:
-        "Selected work and experiments from Jake Lee - stack, tradeoffs, and links.",
+        "Projects and experiments from Jake Lee, including the tech stack, key technical points, and related links.",
       about: "About",
       aboutDescription:
-        "About Jake Lee - background, focus areas, and how we can work together.",
+        "Learn more about Jake Lee's background, focus areas, and ways of working together.",
       contact: "Contact",
       contactDescription:
-        "Contact Jake Lee - send a message, store it in Supabase, and notify by email.",
+        "Contact Jake Lee, send a message, and I'll receive an email notification and reply.",
       notFound: "Not found",
     },
   },
@@ -337,20 +336,18 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
     about: {
       title: "关于",
       description:
-        "这里用来讲清你是谁、你关注什么，以及你如何与人协作。后续可以替换成你自己的表达。",
+        "我是李瑞锋，七年前端开发经验，多个成熟产品的开发与交付经验，涉及多个领域，包含互联网、教育、学术出版、政府服务等。",
       focusTitle: "关注方向",
       focusBody:
-        "前端架构、性能优化与兼顾产品视角的工程实践，也为课程、模板和咨询服务预留空间。",
+        "擅长前端架构、性能优化、用户体验优化与兼顾产品视角的工程实践。",
       workTitle: "工作方式",
-      workBody: "偏好短迭代、明确取舍，以及能够在交接后继续发挥作用的文档。",
+      workBody: "快速拆解需求，持续输出阶段性技术方案和项目成果。",
       talkTitle: "欢迎联系",
-      talkBody:
-        "可以通过联系表单发送合作、咨询或演讲需求，后续加预约和下载能力也不需要重构。",
+      talkBody: "可以通过联系我发送合作、咨询或开发需求，期待与您合作。",
     },
     contact: {
       title: "联系",
-      description:
-        "告诉我你的需求概要和联系邮箱。消息会通过联系接口保存，并转发到我的收件箱。",
+      description: "告诉我你的需求概要和联系邮箱，我会尽快回复你。",
       name: "姓名",
       email: "邮箱",
       message: "留言",
@@ -362,7 +359,7 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
     },
     newsletter: {
       title: "订阅更新",
-      description: "不定期发送新文章和项目更新。不发垃圾邮件，随时可退订。",
+      description: "不定期发送新文章和项目更新。",
       submit: "订阅",
       success: "你已经加入订阅列表。",
       error: "当前无法完成订阅，请稍后再试。",
@@ -379,12 +376,11 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
         "Jake Lee 的文章与笔记，关注工程实践、性能与产品化思路。",
       projects: "项目",
       projectsDescription:
-        "Jake Lee 的项目与实验，包含技术栈、取舍与相关链接。",
+        "Jake Lee 的项目与实验，包含技术栈、技术要点与相关链接。",
       about: "关于",
       aboutDescription: "了解 Jake Lee 的背景、关注方向以及合作方式。",
       contact: "联系",
-      contactDescription:
-        "联系 Jake Lee，发送消息，保存到 Supabase 并通过邮件通知。",
+      contactDescription: "联系 Jake Lee，发送消息，我会接收到邮件通知并回复。",
       notFound: "未找到页面",
     },
   },
