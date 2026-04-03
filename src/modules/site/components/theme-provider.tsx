@@ -14,10 +14,23 @@ type ThemeContextValue = {
 const STORAGE_KEY = "theme";
 const ThemeContext = React.createContext<ThemeContextValue | null>(null);
 
+function getStoredTheme(): Theme {
+  const savedTheme = window.localStorage.getItem(STORAGE_KEY);
+  if (savedTheme === "light" || savedTheme === "dark" || savedTheme === "system") {
+    return savedTheme;
+  }
+  return "system";
+}
+
 function getSystemTheme(): ResolvedTheme {
   return window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
     : "light";
+}
+
+function getResolvedTheme(theme: Theme): ResolvedTheme {
+  if (theme === "system") return getSystemTheme();
+  return theme;
 }
 
 function applyTheme(theme: ResolvedTheme) {
@@ -27,19 +40,36 @@ function applyTheme(theme: ResolvedTheme) {
   root.style.colorScheme = theme;
 }
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = React.useState<Theme>("system");
-  const [resolvedTheme, setResolvedTheme] =
-    React.useState<ResolvedTheme>("light");
+function setThemeCookie(theme: Theme) {
+  document.cookie = `theme=${theme}; Path=/; Max-Age=31536000; SameSite=Lax`;
+}
+
+export function ThemeProvider({
+  children,
+  initialTheme = "system",
+}: {
+  children: React.ReactNode;
+  initialTheme?: Theme;
+}) {
+  const [theme, setThemeState] = React.useState<Theme>(() => {
+    if (typeof window === "undefined") return initialTheme;
+    return getStoredTheme();
+  });
+
+  const [resolvedTheme, setResolvedTheme] = React.useState<ResolvedTheme>(() => {
+    if (typeof window === "undefined") return "light";
+    if (document.documentElement.classList.contains("dark")) return "dark";
+    if (document.documentElement.classList.contains("light")) return "light";
+    return getResolvedTheme(getStoredTheme());
+  });
 
   React.useEffect(() => {
-    const savedTheme = window.localStorage.getItem(STORAGE_KEY) as Theme | null;
-    const nextTheme = savedTheme ?? "system";
-    const nextResolvedTheme =
-      nextTheme === "system" ? getSystemTheme() : nextTheme;
+    const nextTheme = getStoredTheme();
+    const nextResolvedTheme = getResolvedTheme(nextTheme);
 
     setThemeState(nextTheme);
     setResolvedTheme(nextResolvedTheme);
+    setThemeCookie(nextTheme);
     applyTheme(nextResolvedTheme);
   }, []);
 
@@ -49,8 +79,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const handleSystemChange = () => {
       setResolvedTheme((currentResolvedTheme) => {
         const nextResolvedTheme = getSystemTheme();
-        const currentTheme =
-          (window.localStorage.getItem(STORAGE_KEY) as Theme | null) ?? "system";
+        const currentTheme = getStoredTheme();
 
         if (currentTheme === "system") {
           applyTheme(nextResolvedTheme);
@@ -64,12 +93,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const handleStorage = (event: StorageEvent) => {
       if (event.key !== STORAGE_KEY) return;
 
-      const nextTheme = (event.newValue as Theme | null) ?? "system";
-      const nextResolvedTheme =
-        nextTheme === "system" ? getSystemTheme() : nextTheme;
+      const nextTheme =
+        event.newValue === "light" ||
+        event.newValue === "dark" ||
+        event.newValue === "system"
+          ? event.newValue
+          : "system";
+      const nextResolvedTheme = getResolvedTheme(nextTheme);
 
       setThemeState(nextTheme);
       setResolvedTheme(nextResolvedTheme);
+      setThemeCookie(nextTheme);
       applyTheme(nextResolvedTheme);
     };
 
@@ -83,10 +117,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const setTheme = React.useCallback((nextTheme: Theme) => {
-    const nextResolvedTheme =
-      nextTheme === "system" ? getSystemTheme() : nextTheme;
+    const nextResolvedTheme = getResolvedTheme(nextTheme);
 
     window.localStorage.setItem(STORAGE_KEY, nextTheme);
+    setThemeCookie(nextTheme);
     setThemeState(nextTheme);
     setResolvedTheme(nextResolvedTheme);
     applyTheme(nextResolvedTheme);

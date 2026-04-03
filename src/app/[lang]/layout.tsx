@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Geist_Mono, Manrope } from "next/font/google";
 import "@/app/globals.css";
+import Script from "next/script";
 import { ThemeProvider } from "@/modules/site/components/theme-provider";
 import { JsonLd } from "@/modules/seo/jsonld/json-ld";
 import { getSiteGraphJsonLd } from "@/modules/seo/jsonld/site-graph";
@@ -17,6 +19,24 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+type Theme = "light" | "dark" | "system";
+
+const themeInitScript = `
+(() => {
+  const storageKey = "theme";
+  const root = document.documentElement;
+  const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+  const savedTheme = localStorage.getItem(storageKey) || "system";
+  const resolvedTheme = savedTheme === "system" ? systemTheme : savedTheme;
+
+  root.classList.remove("light", "dark");
+  root.classList.add(resolvedTheme);
+  root.style.colorScheme = resolvedTheme;
+})();
+`;
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -68,16 +88,34 @@ export async function generateMetadata({
 export default async function RootLayout({ children, params }: LayoutProps) {
   const { lang } = await params;
   const { locale, dictionary } = await getLocaleDictionary(lang);
+  const cookieStore = await cookies();
+  const cookieTheme = cookieStore.get("theme")?.value;
+  const resolvedThemeClass =
+    cookieTheme === "light" || cookieTheme === "dark" ? cookieTheme : "";
+  const initialTheme = (
+    cookieTheme === "light" ||
+    cookieTheme === "dark" ||
+    cookieTheme === "system"
+      ? cookieTheme
+      : "system"
+  ) as Theme;
 
   return (
     <html
       lang={getLanguageTag(locale)}
-      className={`${sans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${sans.variable} ${geistMono.variable} ${resolvedThemeClass} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: themeInitScript }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <JsonLd data={getSiteGraphJsonLd(locale, dictionary.site.description)} />
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider initialTheme={initialTheme}>{children}</ThemeProvider>
       </body>
     </html>
   );
