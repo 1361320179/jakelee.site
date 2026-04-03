@@ -126,7 +126,7 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
   en: {
     site: {
       description:
-        "Personal brand, engineering notes, and projects - a modular home for content and future product surface.",
+        "Personal brand, premium blog posts, and project case studies - delivering enterprise-level development and services.",
     },
     navigation: {
       home: "Home",
@@ -156,7 +156,8 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
     },
     home: {
       eyebrow: "Personal brand / Content / Platform",
-      title: "Build clarity, ship craft, grow a lasting presence.",
+      title:
+        "Deeply improve user experience, create high-quality products, and build lasting impact.",
       primaryCta: "Get in touch",
       secondaryCta: "Read the blog",
       cardIntroTitle: "Jake Lee",
@@ -170,11 +171,11 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
       writingCta: "Browse blog",
       projectsTitle: "Projects",
       projectsBody:
-        "Case-style breakdowns with stack, tradeoffs, and links to live demos.",
+        "Case-based disassembly of the technology stack, key technical points, and online links.",
       projectsCta: "View work",
       collaborationTitle: "Collaboration",
       collaborationBody:
-        "Contact and newsletter hooks are wired for conversions as you scale.",
+        "Feel free to reach out and subscribe for deeper discussions and future collaboration.",
       collaborationCta: "Contact",
       nextStepTitle: "Next step",
       nextStepBody:
@@ -194,7 +195,7 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
     projects: {
       title: "Projects",
       description:
-        "Case-style write-ups with tech stack, constraints, and links. Swap summaries and MDX bodies as your portfolio grows.",
+        "Use case studies to showcase your tech stack, highlight key technical insights, and link to real-world results—so your portfolio can keep evolving over time.",
       empty: "No projects published yet.",
       caseStudy: "Case study",
       liveDemo: "Live demo",
@@ -261,7 +262,7 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
   },
   zh: {
     site: {
-      description: "个人品牌、工程笔记与项目沉淀，作为内容与后续产品化能力的长期载体。",
+      description: "个人品牌、精品博文与项目案例，提供企业级项目开发与服务。",
     },
     navigation: {
       home: "首页",
@@ -291,7 +292,7 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
     },
     home: {
       eyebrow: "个人品牌 / 内容 / 平台",
-      title: "建立清晰表达，持续交付作品，沉淀长期影响力。",
+      title: "深入用户体验，打造精品作品，沉淀长期影响力。",
       primaryCta: "联系我",
       secondaryCta: "阅读博客",
       cardIntroTitle: "Jake Lee",
@@ -303,13 +304,14 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
       writingBody: "长文、技术笔记与实践手册，兼顾阅读体验与 SEO。",
       writingCta: "浏览博客",
       projectsTitle: "项目",
-      projectsBody: "案例式拆解技术栈、取舍与线上链接。",
+      projectsBody: "案例式拆解技术栈、技术要点与线上链接。",
       projectsCta: "查看项目",
       collaborationTitle: "合作",
-      collaborationBody: "联系与订阅入口已经就位，便于后续承接咨询和转化。",
+      collaborationBody: "欢迎联系与订阅，便于后续深入交流与合作。",
       collaborationCta: "联系",
       nextStepTitle: "下一步",
-      nextStepBody: "告诉我你在做什么，或者先订阅，等 newsletter 上线时再收到通知。",
+      nextStepBody:
+        "告诉我你在做什么，或者先订阅，等 newsletter 上线时再收到通知。",
       nextStepCta: "开始交流",
     },
     blog: {
@@ -323,7 +325,8 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
     },
     projects: {
       title: "项目",
-      description: "用案例形式记录技术栈、约束条件与成果链接，作品集可以持续扩展。",
+      description:
+        "用案例形式记录技术栈、技术要点与成果链接，作品集可以持续扩展。",
       empty: "暂时还没有已发布项目。",
       caseStudy: "查看案例",
       liveDemo: "在线演示",
@@ -333,18 +336,21 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
     },
     about: {
       title: "关于",
-      description: "这里用来讲清你是谁、你关注什么，以及你如何与人协作。后续可以替换成你自己的表达。",
+      description:
+        "这里用来讲清你是谁、你关注什么，以及你如何与人协作。后续可以替换成你自己的表达。",
       focusTitle: "关注方向",
       focusBody:
         "前端架构、性能优化与兼顾产品视角的工程实践，也为课程、模板和咨询服务预留空间。",
       workTitle: "工作方式",
       workBody: "偏好短迭代、明确取舍，以及能够在交接后继续发挥作用的文档。",
       talkTitle: "欢迎联系",
-      talkBody: "可以通过联系表单发送合作、咨询或演讲需求，后续加预约和下载能力也不需要重构。",
+      talkBody:
+        "可以通过联系表单发送合作、咨询或演讲需求，后续加预约和下载能力也不需要重构。",
     },
     contact: {
       title: "联系",
-      description: "告诉我你的需求概要和联系邮箱。消息会通过联系接口保存，并转发到我的收件箱。",
+      description:
+        "告诉我你的需求概要和联系邮箱。消息会通过联系接口保存，并转发到我的收件箱。",
       name: "姓名",
       email: "邮箱",
       message: "留言",
@@ -369,13 +375,16 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
     metadata: {
       titleTemplate: "%s | Jake Lee",
       blog: "博客",
-      blogDescription: "Jake Lee 的文章与笔记，关注工程实践、性能与产品化思路。",
+      blogDescription:
+        "Jake Lee 的文章与笔记，关注工程实践、性能与产品化思路。",
       projects: "项目",
-      projectsDescription: "Jake Lee 的项目与实验，包含技术栈、取舍与相关链接。",
+      projectsDescription:
+        "Jake Lee 的项目与实验，包含技术栈、取舍与相关链接。",
       about: "关于",
       aboutDescription: "了解 Jake Lee 的背景、关注方向以及合作方式。",
       contact: "联系",
-      contactDescription: "联系 Jake Lee，发送消息，保存到 Supabase 并通过邮件通知。",
+      contactDescription:
+        "联系 Jake Lee，发送消息，保存到 Supabase 并通过邮件通知。",
       notFound: "未找到页面",
     },
   },
