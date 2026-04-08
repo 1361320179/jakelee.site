@@ -145,7 +145,7 @@ This is why experienced teams often start with a static-first bias. Many pages d
 
 SSG does **not** mean "the content can never change until the next full deploy". Modern pipelines can regenerate on a schedule, on demand, or after a CMS event. The real question is whether freshness needs to be measured in seconds, minutes, or hours.
 
-## Choosing a strategy
+## Start with the conclusion
 
 - If first-load SEO matters, **SSR** and **SSG** are usually safer than pure CSR.
 - If first paint must reflect user-specific or request-specific data, **SSR** is usually stronger than SSG.
@@ -153,6 +153,8 @@ SSG does **not** mean "the content can never change until the next full deploy".
 - If the page becomes a rich application after boot, **CSR** remains highly effective.
 - For content-heavy public sites, **SSG** is usually the strongest fit.
 - For internal dashboards and authenticated tools, **CSR** is often the natural default.
+
+If you want a single rule of thumb, use this one: keep public content static by default, add server rendering only when request-time context changes the document, and lean on CSR when the browser is genuinely the main runtime.
 
 ## Use the metrics that match the architecture
 
@@ -187,7 +189,7 @@ Modern frontend systems are usually mixed:
 
 That hybrid model maps business requirements to rendering cost instead of forcing one rule across the entire product.
 
-## A decision flow you can actually use
+## The questions that actually matter
 
 ```text
 Does the page need per-request private or volatile data?
@@ -223,9 +225,9 @@ Most content does not require per-request regeneration. Event-driven revalidatio
 
 HTML can arrive quickly while the page still feels slow because the client bundle is too large. Rendering mode does not excuse oversized JavaScript.
 
-## Recommendation
+## Final judgment
 
-For most teams, a sensible order is:
+For most teams, a sensible order is still:
 
 1. Default to **SSG** for public content.
 2. Add **SSR** only where request-time context changes the document.
@@ -233,4 +235,4 @@ For most teams, a sensible order is:
 
 That sequence tends to optimize both user experience and operational cost.
 
-Rendering is not a philosophical choice. It is a latency allocation decision. The senior move is to decide, page by page, which layer should do the work and which layer should be allowed to cache it.
+Rendering is not a philosophical choice. It is a latency, caching, and complexity allocation decision. The senior move is to decide, page by page, which layer should compute, which layer should cache, and which layer should stay interactive.
