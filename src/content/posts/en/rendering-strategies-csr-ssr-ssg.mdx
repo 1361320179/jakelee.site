@@ -1,0 +1,241 @@
+---
+title: "CSR, SSR, and SSG: how to choose rendering with system-level tradeoffs"
+description: "A senior-level guide to client-side rendering, server-side rendering, and static generation across Core Web Vitals, SEO, caching, and operational complexity."
+date: "2025-06-05"
+category: "architecture"
+tags:
+  - frontend
+  - rendering
+  - performance
+  - seo
+---
+
+Teams often discuss rendering as if it were a framework preference. It is not. Rendering is a delivery strategy that determines where HTML is produced, when data is resolved, what can be cached, and which part of the system pays the latency bill.
+
+If you model CSR, SSR, and SSG as infrastructure choices instead of template-level features, the tradeoffs become much clearer.
+
+---
+
+## The shortest definition that still matters
+
+- **CSR**: the browser downloads JavaScript, fetches data, and renders the screen on the client.
+- **SSR**: the server renders HTML per request, then the client hydrates the page.
+- **SSG**: HTML is generated ahead of time during build or revalidation and served as static assets.
+
+Those definitions are correct but incomplete. What actually matters is the full request path:
+
+```text
+CSR
+Browser -> HTML shell -> JS bundle -> API calls -> render -> interactive
+
+SSR
+Browser -> server render with data -> HTML -> hydrate -> interactive
+
+SSG
+Browser -> CDN/static HTML -> hydrate if needed -> interactive
+```
+
+The same page can also mix strategies. A static shell with client-side islands, or a server-rendered route with deferred widgets, is often a better answer than choosing one label for the whole application.
+
+## CSR: optimal when the browser is the real runtime
+
+CSR is the right default when personalization is strong, SEO is irrelevant, and the application behaves more like a long-lived client than a document.
+
+Typical cases:
+
+- authenticated dashboards
+- internal admin systems
+- collaborative tools with frequent client state updates
+- products with heavy drag-and-drop, editors, charts, or offline behavior
+
+### Where CSR wins
+
+CSR removes server render work from the critical path after the initial shell. Once the application is loaded, route transitions can feel fast because the browser already owns the runtime, cache, and state graph.
+
+It also keeps the HTML contract thin. Your server can expose APIs instead of owning view composition for every request.
+
+### Where CSR loses
+
+The browser pays for almost everything:
+
+- JavaScript download
+- parse and compile cost
+- hydration or client bootstrap cost
+- API waterfalls if data dependencies are not flattened
+
+That means CSR can look acceptable in a warm local environment while performing poorly on mid-tier mobile devices. Time to first byte can be fine, but **Largest Contentful Paint** and **Time to Interactive** can degrade because the user waits on code execution rather than just network transfer.
+
+### CSR failure mode to watch
+
+The classic mistake is serving an empty shell with a spinner, then fetching multiple resources sequentially:
+
+```text
+HTML shell
+  -> app bundle
+    -> user API
+      -> permissions API
+        -> page data API
+          -> render
+```
+
+That is not a rendering strategy. It is a latency amplifier.
+
+## SSR: useful when the request must shape the document
+
+SSR is valuable when the server needs request-time knowledge before producing meaningful HTML.
+
+Examples:
+
+- pages that depend on auth or geo context
+- search and listing pages that must reflect current filters on first load
+- content requiring strong SEO and fresh request-time data
+- commerce experiences where inventory, price, or promotions change frequently
+
+### What SSR buys you
+
+The user receives meaningful HTML earlier. Crawlers and link unfurlers also see complete content without depending on client execution. You can centralize access control, localization, AB logic, and data orchestration before the browser starts working.
+
+### What SSR costs
+
+SSR turns every request into potential compute:
+
+- application server or edge execution
+- upstream data latency
+- reduced cache hit rates if pages vary heavily
+- higher operational sensitivity under traffic spikes
+
+A page that takes 350ms to render on the server is not free just because it "feels modern". Under concurrency, that cost compounds.
+
+### SSR is only as good as its caching model
+
+Senior teams do not evaluate SSR in isolation. They ask:
+
+- Can the HTML be cached publicly?
+- What keys cause variation?
+- Can data be cached separately from HTML?
+- Can parts of the page be streamed or deferred?
+
+If the answer to all of those is "no", SSR can become the most expensive way to deliver an otherwise simple document.
+
+## SSG: the best default for stable public content
+
+SSG is usually the strongest option for pages that change less frequently than they are read.
+
+Examples:
+
+- blogs
+- documentation
+- landing pages
+- portfolio and marketing pages
+- product pages with controlled publish workflows
+
+### Why SSG still wins in many real systems
+
+It gives you the easiest performance profile:
+
+- static HTML from a CDN
+- predictable caching
+- strong SEO
+- minimal server compute
+- low tail latency under traffic
+
+This is why experienced teams often start with a static-first bias. Many pages do not need per-request rendering; they need disciplined publishing and revalidation.
+
+### The common misunderstanding
+
+SSG does **not** mean "the content can never change until the next full deploy". Modern pipelines can regenerate on a schedule, on demand, or after a CMS event. The real question is whether freshness needs to be measured in seconds, minutes, or hours.
+
+## A practical decision matrix
+
+| Requirement | CSR | SSR | SSG |
+| --- | --- | --- | --- |
+| Strong SEO on first load | Weak unless pre-rendered | Strong | Strong |
+| Personalized first paint | Medium | Strong | Weak |
+| Lowest infra cost | Medium | Weak | Strong |
+| Best cacheability | Medium | Medium | Strong |
+| Rich client interactions after boot | Strong | Strong | Strong |
+| Best fit for content sites | Weak | Medium | Strong |
+| Best fit for internal apps | Strong | Medium | Weak |
+
+This table is intentionally simplified. The important point is that no option dominates on every axis.
+
+## Use the metrics that match the architecture
+
+A lot of rendering discussions collapse because teams compare unlike metrics.
+
+For public pages, focus on:
+
+- LCP
+- INP
+- CLS
+- crawlability and metadata quality
+- CDN hit ratio
+
+For application surfaces, also track:
+
+- transition latency after login
+- API round trip count
+- bundle size by route
+- hydration cost on real devices
+
+If you only compare "page felt fast on my laptop", you will likely overvalue CSR and undervalue HTML delivery.
+
+## Hybrid is the professional default
+
+Modern frontend systems are usually mixed:
+
+- marketing pages use SSG
+- article pages use SSG plus periodic revalidation
+- search pages use SSR or cached server rendering
+- dashboard areas use CSR after authentication
+- shared chrome stays lightweight so hydration cost remains controlled
+
+That hybrid model maps business requirements to rendering cost instead of forcing one rule across the entire product.
+
+## A decision flow you can actually use
+
+```text
+Does the page need per-request private or volatile data?
+  Yes -> Consider SSR or CSR
+  No  -> Prefer SSG
+
+Does first-load SEO matter?
+  Yes -> Prefer SSG or SSR
+  No  -> CSR becomes more viable
+
+Does the page behave like an application after boot?
+  Yes -> Keep the shell lean and move interactive state client-side
+  No  -> Keep JavaScript minimal and favor pre-rendered HTML
+```
+
+## Common mistakes by experienced teams
+
+Even strong teams repeat a few errors:
+
+### 1. Using SSR to compensate for poor API design
+
+If the server must call five internal services serially just to render a card grid, the problem is likely backend orchestration, not the rendering mode itself.
+
+### 2. Shipping CSR for pages that are mostly documents
+
+If a blog post or feature page ships a large client runtime for negligible interactivity, users pay CPU cost with no business upside.
+
+### 3. Treating SSG as incompatible with freshness
+
+Most content does not require per-request regeneration. Event-driven revalidation is usually enough.
+
+### 4. Ignoring hydration as a budget
+
+HTML can arrive quickly while the page still feels slow because the client bundle is too large. Rendering mode does not excuse oversized JavaScript.
+
+## Recommendation
+
+For most teams, a sensible order is:
+
+1. Default to **SSG** for public content.
+2. Add **SSR** only where request-time context changes the document.
+3. Use **CSR** where the browser is genuinely the application runtime.
+
+That sequence tends to optimize both user experience and operational cost.
+
+Rendering is not a philosophical choice. It is a latency allocation decision. The senior move is to decide, page by page, which layer should do the work and which layer should be allowed to cache it.
