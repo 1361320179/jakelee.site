@@ -90,17 +90,14 @@ Webpack can still be the right answer when the build system is deeply integrated
 
 Either can work. The better choice depends on output targets, test infrastructure, and publish conventions. For library authoring, consistency of emitted artifacts is often more important than local dev startup alone.
 
-## A comparison table that reflects actual engineering concerns
+## Performance and fit at a glance
 
-| Dimension | Vite | Webpack |
-| --- | --- | --- |
-| Dev server startup | Excellent | Usually slower |
-| HMR responsiveness | Excellent in modern apps | Good, but varies by config |
-| Config complexity | Lower | Higher |
-| Legacy customization depth | Medium | Excellent |
-| Ecosystem maturity | High | Very high |
-| Enterprise migration risk | Medium | Low if already adopted |
-| Best fit for greenfield modern apps | Strong | Medium |
+- On dev server startup and day-to-day iteration speed, **Vite** usually performs better.
+- On HMR experience in modern applications, **Vite** is often more responsive.
+- On configuration depth and legacy customization, **Webpack** still has the advantage.
+- On ecosystem maturity, both are strong, but **Webpack** remains broader in edge-case coverage.
+- For greenfield modern frontend projects, **Vite** is usually the better default.
+- For large established systems with historical build coupling, **Webpack** may still be the lower-risk choice.
 
 ## Migration should be evaluated like a business decision
 
