@@ -12,6 +12,11 @@ type Dictionary = {
     projects: string;
     about: string;
     contact: string;
+    site: string;
+    game: string;
+    siteMenuEyebrow: string;
+    siteMenuDescription: string;
+    siteMenuCaption: string;
     menu: string;
     switchToLight: string;
     switchToDark: string;
@@ -134,6 +139,12 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
       projects: "Projects",
       about: "About",
       contact: "Contact",
+      site: "Site",
+      game: "Game",
+      siteMenuEyebrow: "Subdomain hub",
+      siteMenuDescription:
+        "A curated entry point for standalone products and experiments.",
+      siteMenuCaption: "Playable builds and interactive experiments",
       menu: "Menu",
       switchToLight: "Switch to light mode",
       switchToDark: "Switch to dark mode",
@@ -269,6 +280,11 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
       projects: "项目",
       about: "关于",
       contact: "联系",
+      site: "网站",
+      game: "游戏",
+      siteMenuEyebrow: "子域名入口",
+      siteMenuDescription: "用于承载独立产品与实验站点的统一入口。",
+      siteMenuCaption: "游戏与交互实验子站",
       menu: "菜单",
       switchToLight: "切换到浅色模式",
       switchToDark: "切换到深色模式",

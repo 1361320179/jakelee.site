@@ -5,3 +5,13 @@ export const mainNav = [
   { key: "about", href: "/about" },
   { key: "contact", href: "/contact" },
 ] as const;
+
+export const siteNav = {
+  key: "site",
+  items: [
+    {
+      key: "game",
+      href: "https://game.jakelee.site",
+    },
+  ],
+} as const;
