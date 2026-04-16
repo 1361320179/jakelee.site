@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -52,13 +53,124 @@ type SiteHeaderProps = {
   languageLabels: Record<SiteLocale, string>;
 };
 
+type MobileNavLabels = {
+  home: string;
+  blog: string;
+  projects: string;
+  about: string;
+  contact: string;
+  site: string;
+};
+
+type MobileNavSheetProps = {
+  locale: SiteLocale;
+  labels: SiteHeaderProps["labels"];
+  navLabels: MobileNavLabels;
+};
+
+function MobileNavSheet({ locale, labels, navLabels }: MobileNavSheetProps) {
+  const [siteLinksOpen, setSiteLinksOpen] = useState(false);
+
+  return (
+    <Sheet>
+      <SheetTrigger
+        className={cn(
+          buttonVariants({ variant: "ghost", size: "icon" }),
+          "md:hidden",
+        )}
+        aria-label={labels.menu}
+      >
+        <Menu className="size-5" />
+      </SheetTrigger>
+      <SheetContent
+        side="right"
+        className="w-[min(100%,20rem)] border-border/70 bg-popover/96 backdrop-blur-xl"
+      >
+        <SheetHeader>
+          <SheetTitle className="text-left">{labels.menu}</SheetTitle>
+        </SheetHeader>
+        <nav className="mt-6 flex flex-col gap-2" aria-label="Mobile">
+          {mainNav.map((item) => (
+            <Link
+              key={item.href}
+              href={getLocalizedPath(locale, item.href)}
+              className="rounded-2xl border border-transparent px-4 py-3 text-sm font-medium text-foreground hover:border-border/70 hover:bg-accent/70"
+            >
+              {navLabels[item.key]}
+            </Link>
+          ))}
+          <div className="overflow-hidden rounded-2xl border border-border/70 bg-accent/25">
+            <button
+              type="button"
+              onClick={() => setSiteLinksOpen((open) => !open)}
+              className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-foreground transition-colors hover:bg-accent/55"
+              aria-expanded={siteLinksOpen}
+            >
+              <span>{labels.site}</span>
+              <ChevronRight
+                className={cn(
+                  "size-4 text-muted-foreground transition-transform duration-300",
+                  siteLinksOpen && "rotate-90 text-foreground",
+                )}
+              />
+            </button>
+            <div
+              className={cn(
+                "grid transition-all duration-300 ease-out",
+                siteLinksOpen
+                  ? "grid-rows-[1fr] opacity-100"
+                  : "grid-rows-[0fr] opacity-70",
+              )}
+            >
+              <div className="overflow-hidden">
+                <div className="space-y-3 border-t border-border/60 px-4 pt-3 pb-4">
+                  <div className="rounded-2xl border border-border/50 bg-background/70 px-3.5 py-3">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-muted-foreground/90">
+                      {labels.siteMenuEyebrow}
+                    </p>
+                    <p className="mt-1 text-sm text-foreground/90">
+                      {labels.siteMenuDescription}
+                    </p>
+                  </div>
+                  {siteNav.items.map((item) => (
+                    <SheetClose
+                      key={item.href}
+                      nativeButton={false}
+                      render={
+                        <a
+                          href={item.href}
+                          className="group flex items-center justify-between rounded-2xl border border-border/60 bg-background/85 px-4 py-3 text-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/15 hover:bg-background"
+                        >
+                          <div>
+                            <div className="flex items-center gap-2 font-medium text-foreground">
+                              <span>{labels.game}</span>
+                              <ExternalLink className="size-3.5 text-muted-foreground transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                            </div>
+                            <p className="mt-1 text-xs text-muted-foreground">
+                              {labels.siteMenuCaption}
+                            </p>
+                          </div>
+                          <ChevronRight className="size-4 text-muted-foreground transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-foreground" />
+                        </a>
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
 export function SiteHeader({
   locale,
   labels,
   languageLabels,
 }: SiteHeaderProps) {
   const pathname = usePathname();
-  const [mobileSiteOpen, setMobileSiteOpen] = useState(false);
   const pathnameWithoutLocale = stripLocaleFromPathname(pathname);
   const navLabels = {
     home: labels.home,
@@ -207,91 +319,12 @@ export function SiteHeader({
                 switchToDark: labels.switchToDark,
               }}
             />
-            <Sheet>
-              <SheetTrigger
-                className={cn(
-                  buttonVariants({ variant: "ghost", size: "icon" }),
-                  "md:hidden",
-                )}
-                aria-label={labels.menu}
-              >
-                <Menu className="size-5" />
-              </SheetTrigger>
-              <SheetContent
-                side="right"
-                className="w-[min(100%,20rem)] border-border/70 bg-popover/96 backdrop-blur-xl"
-              >
-                <SheetHeader>
-                  <SheetTitle className="text-left">{labels.menu}</SheetTitle>
-                </SheetHeader>
-                <nav className="mt-6 flex flex-col gap-2" aria-label="Mobile">
-                  {mainNav.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={getLocalizedPath(locale, item.href)}
-                      className="rounded-2xl border border-transparent px-4 py-3 text-sm font-medium text-foreground hover:border-border/70 hover:bg-accent/70"
-                    >
-                      {navLabels[item.key]}
-                    </Link>
-                  ))}
-                  <div className="overflow-hidden rounded-2xl border border-border/70 bg-accent/25">
-                    <button
-                      type="button"
-                      onClick={() => setMobileSiteOpen((open) => !open)}
-                      className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-foreground transition-colors hover:bg-accent/55"
-                      aria-expanded={mobileSiteOpen}
-                    >
-                      <span>{labels.site}</span>
-                      <ChevronRight
-                        className={cn(
-                          "size-4 text-muted-foreground transition-transform duration-300",
-                          mobileSiteOpen && "rotate-90 text-foreground",
-                        )}
-                      />
-                    </button>
-                    <div
-                      className={cn(
-                        "grid transition-all duration-300 ease-out",
-                        mobileSiteOpen
-                          ? "grid-rows-[1fr] opacity-100"
-                          : "grid-rows-[0fr] opacity-70",
-                      )}
-                    >
-                      <div className="overflow-hidden">
-                        <div className="space-y-3 border-t border-border/60 px-4 pt-3 pb-4">
-                          <div className="rounded-2xl border border-border/50 bg-background/70 px-3.5 py-3">
-                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-muted-foreground/90">
-                              {labels.siteMenuEyebrow}
-                            </p>
-                            <p className="mt-1 text-sm text-foreground/90">
-                              {labels.siteMenuDescription}
-                            </p>
-                          </div>
-                          {siteNav.items.map((item) => (
-                            <a
-                              key={item.href}
-                              href={item.href}
-                              className="group flex items-center justify-between rounded-2xl border border-border/60 bg-background/85 px-4 py-3 text-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/15 hover:bg-background"
-                            >
-                              <div>
-                                <div className="flex items-center gap-2 font-medium text-foreground">
-                                  <span>{labels.game}</span>
-                                  <ExternalLink className="size-3.5 text-muted-foreground transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                                </div>
-                                <p className="mt-1 text-xs text-muted-foreground">
-                                  {labels.siteMenuCaption}
-                                </p>
-                              </div>
-                              <ChevronRight className="size-4 text-muted-foreground transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-foreground" />
-                            </a>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </nav>
-              </SheetContent>
-            </Sheet>
+            <MobileNavSheet
+              key={pathname}
+              locale={locale}
+              labels={labels}
+              navLabels={navLabels}
+            />
           </div>
         </div>
       </div>
