@@ -3,10 +3,26 @@ import { siteConfig } from "@/modules/site/configs/site";
 
 const base = siteConfig.url.replace(/\/$/, "");
 
+function socialSameAs(): string[] | undefined {
+  const urls = [siteConfig.links.github, siteConfig.links.twitter].filter(
+    (u): u is string => typeof u === "string" && u.length > 0,
+  );
+  return urls.length > 0 ? urls : undefined;
+}
+
 export function getSiteGraphJsonLd(
   locale: SiteLocale,
   description: string,
 ) {
+  const person: Record<string, unknown> = {
+    "@type": "Person",
+    "@id": `${base}/#person`,
+    name: siteConfig.name,
+    url: `${base}/${locale}`,
+  };
+  const sameAs = socialSameAs();
+  if (sameAs) person.sameAs = sameAs;
+
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -19,13 +35,7 @@ export function getSiteGraphJsonLd(
         inLanguage: getLanguageTag(locale),
         publisher: { "@id": `${base}/#person` },
       },
-      {
-        "@type": "Person",
-        "@id": `${base}/#person`,
-        name: siteConfig.name,
-        url: `${base}/${locale}`,
-        sameAs: [siteConfig.links.github, siteConfig.links.twitter],
-      },
+      person,
     ],
   };
 }

@@ -22,8 +22,8 @@ export async function GET() {
       (p) => `
     <item>
       <title>${escapeXml(p.title)}</title>
-      <link>${base}/blog/${p.slug}</link>
-      <guid isPermaLink="true">${base}/blog/${p.slug}</guid>
+      <link>${base}/${defaultLocale}/blog/${p.slug}</link>
+      <guid isPermaLink="true">${base}/${defaultLocale}/blog/${p.slug}</guid>
       <pubDate>${new Date(p.date).toUTCString()}</pubDate>
       ${p.description ? `<description>${escapeXml(p.description)}</description>` : ""}
     </item>`,

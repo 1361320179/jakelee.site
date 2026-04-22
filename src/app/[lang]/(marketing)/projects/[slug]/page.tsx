@@ -33,6 +33,7 @@ export async function generateMetadata({
 
   const { meta } = project;
   const canonical = `/${locale}/projects/${meta.slug}`;
+  const ogImage = `/api/og?title=${encodeURIComponent(meta.title)}&subtitle=${encodeURIComponent(meta.summary)}`;
 
   return {
     title: meta.title,
@@ -46,11 +47,13 @@ export async function generateMetadata({
       description: meta.summary,
       url: `${siteConfig.url.replace(/\/$/, "")}${canonical}`,
       type: "article",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: meta.title }],
     },
     twitter: {
       card: "summary_large_image",
       title: meta.title,
       description: meta.summary,
+      images: [ogImage],
     },
   };
 }

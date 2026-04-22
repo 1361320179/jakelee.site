@@ -10,7 +10,11 @@ export const env = createEnv({
     EMAIL_FROM: z.string().email().optional(),
   },
   client: {
+    /** Production: canonical https origin (metadataBase, sitemap, RSS). Submit this host’s sitemap in Search Console. */
     NEXT_PUBLIC_SITE_URL: z.string().url().optional(),
+    /** Public profile URL for footer + JSON-LD sameAs (omit when unset). */
+    NEXT_PUBLIC_SOCIAL_GITHUB_URL: z.string().url().optional(),
+    NEXT_PUBLIC_SOCIAL_TWITTER_URL: z.string().url().optional(),
     NEXT_PUBLIC_SUPABASE_URL: z.string().url().optional(),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().optional(),
   },
@@ -21,6 +25,8 @@ export const env = createEnv({
     EMAIL_TO: process.env.EMAIL_TO,
     EMAIL_FROM: process.env.EMAIL_FROM,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+    NEXT_PUBLIC_SOCIAL_GITHUB_URL: process.env.NEXT_PUBLIC_SOCIAL_GITHUB_URL,
+    NEXT_PUBLIC_SOCIAL_TWITTER_URL: process.env.NEXT_PUBLIC_SOCIAL_TWITTER_URL,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   },

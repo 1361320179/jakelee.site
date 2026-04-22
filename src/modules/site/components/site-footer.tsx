@@ -48,24 +48,30 @@ export function SiteFooter({
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
-                <Link
-                  href={siteConfig.links.github}
-                  className="rounded-full border border-border/70 px-4 py-2 hover:bg-accent/70 hover:text-foreground"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  GitHub
-                </Link>
-                <Link
-                  href={siteConfig.links.twitter}
-                  className="rounded-full border border-border/70 px-4 py-2 hover:bg-accent/70 hover:text-foreground"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Twitter / X
-                </Link>
-              </div>
+              {siteConfig.links.github || siteConfig.links.twitter ? (
+                <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
+                  {siteConfig.links.github ? (
+                    <Link
+                      href={siteConfig.links.github}
+                      className="rounded-full border border-border/70 px-4 py-2 hover:bg-accent/70 hover:text-foreground"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      GitHub
+                    </Link>
+                  ) : null}
+                  {siteConfig.links.twitter ? (
+                    <Link
+                      href={siteConfig.links.twitter}
+                      className="rounded-full border border-border/70 px-4 py-2 hover:bg-accent/70 hover:text-foreground"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Twitter / X
+                    </Link>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

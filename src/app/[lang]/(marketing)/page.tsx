@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { ArrowRight, BookOpen, FolderKanban, Mail } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
@@ -10,11 +11,32 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getLocalizedPath } from "@/i18n/config";
-import { getLocaleDictionary } from "@/i18n/server";
+import { getLocaleAlternates, getLocaleDictionary } from "@/i18n/server";
+import { siteConfig } from "@/modules/site/configs/site";
 
 type HomePageProps = {
   params: Promise<{ lang: string }>;
 };
+
+export async function generateMetadata({
+  params,
+}: HomePageProps): Promise<Metadata> {
+  const { lang } = await params;
+  const { locale, dictionary } = await getLocaleDictionary(lang);
+  const canonical = `/${locale}`;
+
+  return {
+    alternates: {
+      canonical,
+      languages: getLocaleAlternates("/"),
+    },
+    openGraph: {
+      title: siteConfig.title,
+      description: dictionary.site.description,
+      url: `${siteConfig.url.replace(/\/$/, "")}${canonical}`,
+    },
+  };
+}
 
 export default async function HomePage({ params }: HomePageProps) {
   const { lang } = await params;
