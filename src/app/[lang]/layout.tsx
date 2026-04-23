@@ -55,6 +55,11 @@ export async function generateMetadata({
 
   return {
     metadataBase: new URL(siteConfig.url),
+    icons: {
+      icon: [
+        { url: "/favicon.svg", type: "image/svg+xml", sizes: "any" },
+      ],
+    },
     title: {
       default: siteConfig.title,
       template: dictionary.metadata.titleTemplate,
