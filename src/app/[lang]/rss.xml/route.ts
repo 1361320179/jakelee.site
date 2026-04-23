@@ -1,7 +1,7 @@
-import { defaultLocale, getLanguageTag } from "@/i18n/config";
-import { getDictionary } from "@/i18n/dictionaries";
+import { getLanguageTag } from "@/i18n/config";
 import { siteConfig } from "@/modules/site/configs/site";
 import { getAllPostsMeta } from "@/modules/blog/server/posts";
+import { getLocaleDictionary } from "@/i18n/server";
 
 function escapeXml(text: string) {
   return text
@@ -12,18 +12,23 @@ function escapeXml(text: string) {
     .replace(/'/g, "&apos;");
 }
 
-export async function GET() {
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ lang: string }> }
+) {
+  const { lang } = await params;
+  const { locale, dictionary } = await getLocaleDictionary(lang);
+
   const base = siteConfig.url.replace(/\/$/, "");
-  const dictionary = await getDictionary(defaultLocale);
-  const posts = getAllPostsMeta(defaultLocale).slice(0, 50);
+  const posts = getAllPostsMeta(locale).slice(0, 50);
 
   const items = posts
     .map(
       (p) => `
     <item>
       <title>${escapeXml(p.title)}</title>
-      <link>${base}/${defaultLocale}/blog/${p.slug}</link>
-      <guid isPermaLink="true">${base}/${defaultLocale}/blog/${p.slug}</guid>
+      <link>${base}/${locale}/blog/${p.slug}</link>
+      <guid isPermaLink="true">${base}/${locale}/blog/${p.slug}</guid>
       <pubDate>${new Date(p.date).toUTCString()}</pubDate>
       ${p.description ? `<description>${escapeXml(p.description)}</description>` : ""}
     </item>`,
@@ -34,10 +39,10 @@ export async function GET() {
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>${escapeXml(siteConfig.name)}</title>
-    <link>${base}/${defaultLocale}</link>
+    <link>${base}/${locale}</link>
     <description>${escapeXml(dictionary.site.description)}</description>
-    <language>${getLanguageTag(defaultLocale)}</language>
-    <atom:link href="${base}/rss.xml" rel="self" type="application/rss+xml" />
+    <language>${getLanguageTag(locale)}</language>
+    <atom:link href="${base}/${locale}/rss.xml" rel="self" type="application/rss+xml" />
     ${items}
   </channel>
 </rss>`;

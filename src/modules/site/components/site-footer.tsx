@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { siteConfig } from "@/modules/site/configs/site";
 import { SubscribeForm } from "@/modules/newsletter/components/subscribe-form";
+import { RssLink } from "@/modules/site/components/rss-link";
 
 export function SiteFooter({
   labels,
+  locale,
 }: {
   labels: {
     title: string;
@@ -12,7 +14,9 @@ export function SiteFooter({
     success: string;
     error: string;
     emailLabel: string;
+    rssHint: string;
   };
+  locale: string;
 }) {
   const year = new Date().getFullYear();
 
@@ -48,30 +52,32 @@ export function SiteFooter({
                 </p>
               </div>
 
-              {siteConfig.links.github || siteConfig.links.twitter ? (
-                <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
-                  {siteConfig.links.github ? (
-                    <Link
-                      href={siteConfig.links.github}
-                      className="rounded-full border border-border/70 px-4 py-2 hover:bg-accent/70 hover:text-foreground"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      GitHub
-                    </Link>
-                  ) : null}
-                  {siteConfig.links.twitter ? (
-                    <Link
-                      href={siteConfig.links.twitter}
-                      className="rounded-full border border-border/70 px-4 py-2 hover:bg-accent/70 hover:text-foreground"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Twitter / X
-                    </Link>
-                  ) : null}
-                </div>
-              ) : null}
+              <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
+                {siteConfig.links.github ? (
+                  <Link
+                    href={siteConfig.links.github}
+                    className="rounded-full border border-border/70 px-4 py-2 hover:bg-accent/70 hover:text-foreground"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    GitHub
+                  </Link>
+                ) : null}
+                {siteConfig.links.twitter ? (
+                  <Link
+                    href={siteConfig.links.twitter}
+                    className="rounded-full border border-border/70 px-4 py-2 hover:bg-accent/70 hover:text-foreground"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Twitter / X
+                  </Link>
+                ) : null}
+                <RssLink
+                  href={`/${locale}/rss.xml`}
+                  hint={labels.rssHint}
+                />
+              </div>
             </div>
           </div>
         </div>

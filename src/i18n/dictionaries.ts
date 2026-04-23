@@ -22,6 +22,7 @@ type Dictionary = {
     switchToDark: string;
     newsletterEmail: string;
     languageSwitcher: string;
+    rssHint: string;
   };
   common: {
     loading: string;
@@ -150,6 +151,7 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
       switchToDark: "Switch to dark mode",
       newsletterEmail: "Email for newsletter",
       languageSwitcher: "Switch language",
+      rssHint: "Please point your RSS reader to this feed URL to see updates:\n\n",
     },
     common: {
       loading: "Loading...",
@@ -290,6 +292,7 @@ const dictionaries: Record<SiteLocale, Dictionary> = {
       switchToDark: "切换到深色模式",
       newsletterEmail: "订阅邮箱",
       languageSwitcher: "切换语言",
+      rssHint: "请将您的 RSS 阅读器指向RSS源，以便看到更新内容：\n\n",
     },
     common: {
       loading: "加载中...",

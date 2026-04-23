@@ -60,6 +60,11 @@ export async function generateMetadata({
       template: dictionary.metadata.titleTemplate,
     },
     description: dictionary.site.description,
+    alternates: {
+      types: {
+        "application/rss+xml": `/${locale}/rss.xml`,
+      },
+    },
     openGraph: {
       title: siteConfig.title,
       description: dictionary.site.description,

@@ -23,6 +23,7 @@ export default async function MarketingLayout({
       />
       <main className="flex-1 pb-4 pt-6 sm:pt-8">{children}</main>
       <SiteFooter
+        locale={locale}
         labels={{
           title: dictionary.newsletter.title,
           description: dictionary.newsletter.description,
@@ -30,6 +31,7 @@ export default async function MarketingLayout({
           success: dictionary.newsletter.success,
           error: dictionary.newsletter.error,
           emailLabel: dictionary.navigation.newsletterEmail,
+          rssHint: dictionary.navigation.rssHint,
         }}
       />
     </div>
