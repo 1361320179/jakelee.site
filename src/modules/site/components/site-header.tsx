@@ -42,9 +42,11 @@ type SiteHeaderProps = {
     contact: string;
     site: string;
     game: string;
+    tool: string;
     siteMenuEyebrow: string;
     siteMenuDescription: string;
     siteMenuCaption: string;
+    siteMenuToolCaption: string;
     menu: string;
     switchToLight: string;
     switchToDark: string;
@@ -143,11 +145,13 @@ function MobileNavSheet({ locale, labels, navLabels }: MobileNavSheetProps) {
                         >
                           <div>
                             <div className="flex items-center gap-2 font-medium text-foreground">
-                              <span>{labels.game}</span>
+                              <span>{labels[item.key]}</span>
                               <ExternalLink className="size-3.5 text-muted-foreground transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                             </div>
                             <p className="mt-1 text-xs text-muted-foreground">
-                              {labels.siteMenuCaption}
+                              {item.key === "game"
+                                ? labels.siteMenuCaption
+                                : labels.siteMenuToolCaption}
                             </p>
                           </div>
                           <ChevronRight className="size-4 text-muted-foreground transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-foreground" />
@@ -252,12 +256,14 @@ export function SiteHeader({
                               <div className="space-y-1">
                                 <div className="flex items-center gap-2">
                                   <span className="text-sm font-semibold text-foreground">
-                                    {labels.game}
+                                    {labels[item.key]}
                                   </span>
                                   <ExternalLink className="size-3.5 text-muted-foreground transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                                 </div>
                                 <p className="text-xs text-muted-foreground">
-                                  {labels.siteMenuCaption}
+                                  {item.key === "game"
+                                    ? labels.siteMenuCaption
+                                    : labels.siteMenuToolCaption}
                                 </p>
                               </div>
                               <span className="rounded-full border border-border/60 bg-background/80 p-2 text-muted-foreground transition-all duration-300 group-hover:border-foreground/15 group-hover:bg-background group-hover:text-foreground dark:bg-background/30">

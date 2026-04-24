@@ -13,5 +13,9 @@ export const siteNav = {
       key: "game",
       href: "https://game.jakelee.site",
     },
+    {
+      key: "tool",
+      href: "https://tool.jakelee.site",
+    },
   ],
 } as const;
