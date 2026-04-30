@@ -9,6 +9,7 @@ import { getSiteGraphJsonLd } from "@/modules/seo/jsonld/site-graph";
 import { siteConfig } from "@/modules/site/configs/site";
 import { getLanguageTag, localeInfo, locales } from "@/i18n/config";
 import { getLocaleDictionary } from "@/i18n/server";
+import { Analytics } from "@vercel/analytics/next";
 
 const sans = Manrope({
   variable: "--font-manrope",
@@ -56,9 +57,7 @@ export async function generateMetadata({
   return {
     metadataBase: new URL(siteConfig.url),
     icons: {
-      icon: [
-        { url: "/favicon.svg", type: "image/svg+xml", sizes: "any" },
-      ],
+      icon: [{ url: "/favicon.svg", type: "image/svg+xml", sizes: "any" }],
     },
     title: {
       default: siteConfig.title,
@@ -124,8 +123,11 @@ export default async function RootLayout({ children, params }: LayoutProps) {
         />
       </head>
       <body className="min-h-full flex flex-col">
-        <JsonLd data={getSiteGraphJsonLd(locale, dictionary.site.description)} />
+        <JsonLd
+          data={getSiteGraphJsonLd(locale, dictionary.site.description)}
+        />
         <ThemeProvider initialTheme={initialTheme}>{children}</ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
