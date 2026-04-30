@@ -10,6 +10,7 @@ import { siteConfig } from "@/modules/site/configs/site";
 import { getLanguageTag, localeInfo, locales } from "@/i18n/config";
 import { getLocaleDictionary } from "@/i18n/server";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const sans = Manrope({
   variable: "--font-manrope",
@@ -128,6 +129,7 @@ export default async function RootLayout({ children, params }: LayoutProps) {
         />
         <ThemeProvider initialTheme={initialTheme}>{children}</ThemeProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
