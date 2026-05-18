@@ -37,7 +37,9 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Other Tools Website
 
+email: admin@jakelee.site contact@jakelee.site
+
 https://resend.com/
-https://accounts.zoho.com account: admin@jakelee.site contact@jakelee.site
+https://accounts.zoho.com
 https://supabase.com/
 https://dashboard.uptimerobot.com/
